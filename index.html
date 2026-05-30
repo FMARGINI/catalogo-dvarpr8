@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DVARPR-8 — Visão Gerencial por Temas</title>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f0f4f8;
+  color: #1e293b;
+  font-size: 13px;
+}
+
+/* ── HEADER ── */
+.header {
+  background: linear-gradient(135deg, #1e3a5f 0%, #1a56db 100%);
+  color: white;
+  padding: 28px 40px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 16px rgba(0,0,0,.25);
+}
+.header-left h1 { font-size: 22px; font-weight: 700; letter-spacing: .3px; }
+.header-left p  { font-size: 13px; opacity: .8; margin-top: 4px; }
+.header-right   { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
+.header-badge {
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.3);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 12px; font-weight: 600;
+}
+.btn-edit {
+  background: rgba(255,255,255,.95);
+  color: #1e3a5f;
+  border: none;
+  border-radius: 20px;
+  padding: 7px 18px;
+  font-size: 12px; font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  transition: all .15s;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+}
+.btn-edit:hover { background: white; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,.2); }
+
+.main { padding: 28px 40px; max-width: 1600px; margin: 0 auto; }
+
+/* ── KPI CARDS ── */
+.kpi-row { display: flex; gap: 14px; margin-bottom: 28px; flex-wrap: wrap; }
+.kpi-card {
+  background: white; border-radius: 10px;
+  padding: 16px 20px; flex: 1; min-width: 130px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  border-top: 4px solid var(--color);
+}
+.kpi-card .num { font-size: 30px; font-weight: 700; color: var(--color); line-height: 1; }
+.kpi-card .lbl { font-size: 11px; color: #64748b; margin-top: 5px; text-transform: uppercase; letter-spacing: .5px; }
+.kpi-card .sub { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+.c-concluido          { --color: #22c55e; }
+.c-code-review        { --color: #06b6d4; }
+.c-em-desenvolvimento { --color: #3b82f6; }
+.c-comprometido       { --color: #f59e0b; }
+.c-backlog            { --color: #94a3b8; }
+.c-planejado          { --color: #a78bfa; }
+.c-em-teste           { --color: #f97316; }
+.c-total              { --color: #1e3a5f; }
+
+/* ── COMPLETUDE ── */
+.completude-box {
+  background: white; border-radius: 10px;
+  padding: 20px 28px; margin-bottom: 28px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+.completude-box h3 { font-size: 14px; font-weight: 700; color: #1e3a5f; margin-bottom: 14px; }
+.completude-pct { font-size: 36px; font-weight: 800; color: #1e3a5f; line-height: 1; }
+.completude-sub { font-size: 12px; color: #64748b; margin-top: 3px; margin-bottom: 16px; }
+.bar-track { height: 18px; border-radius: 9px; background: #f1f5f9; overflow: hidden; display: flex; }
+.bar-seg { height: 100%; transition: width .4s; }
+.bar-concluido    { background: #22c55e; }
+.bar-codereview   { background: #06b6d4; }
+.bar-emdesenv     { background: #3b82f6; }
+.bar-comprometido { background: #f59e0b; }
+.bar-planejado    { background: #a78bfa; }
+.bar-emteste      { background: #f97316; }
+.bar-backlog      { background: #e2e8f0; }
+.legend-row { display: flex; gap: 18px; margin-top: 10px; flex-wrap: wrap; }
+.leg-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #475569; }
+.leg-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── PIPELINE ── */
+.pipeline-box {
+  background: white; border-radius: 10px;
+  padding: 20px 28px; margin-bottom: 28px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+.pipeline-box h3 { font-size: 14px; font-weight: 700; color: #1e3a5f; margin-bottom: 16px; }
+.pipeline { display: flex; align-items: center; gap: 0; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; }
+.phase-block { display: flex; flex-direction: column; align-items: center; min-width: 140px; flex: 1; }
+.phase-inner {
+  background: #f8fafc; border: 2px solid #e2e8f0;
+  border-radius: 10px; padding: 12px 10px; text-align: center; width: 100%;
+}
+.phase-inner.active  { border-color: #3b82f6; background: #eff6ff; }
+.phase-inner.blocked { border-color: #f59e0b; background: #fffbeb; }
+.phase-inner.special { border-color: #a78bfa; background: #faf5ff; }
+.phase-num  { font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: #94a3b8; margin-bottom: 4px; }
+.phase-name { font-size: 12px; font-weight: 700; color: #1e293b; line-height: 1.3; }
+.phase-count{ font-size: 11px; color: #64748b; margin-top: 5px; }
+.phase-status-badge { display: inline-block; margin-top: 6px; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+.ps-andamento{ background: #dbeafe; color: #1e40af; }
+.ps-bloqueado{ background: #fef3c7; color: #92400e; }
+.ps-aguarda  { background: #ede9fe; color: #5b21b6; }
+.arrow-connector { display: flex; align-items: center; padding: 0 6px; color: #94a3b8; font-size: 20px; flex-shrink: 0; }
+.gate-block {
+  background: #fef2f2; border: 2px solid #ef4444;
+  border-radius: 10px; padding: 10px 12px; text-align: center; min-width: 120px; flex-shrink: 0;
+}
+.gate-block .gate-lbl { font-size: 10px; font-weight: 700; color: #ef4444; text-transform: uppercase; letter-spacing: .5px; }
+.gate-block .gate-id  { font-size: 12px; font-weight: 700; color: #b91c1c; margin-top: 3px; }
+.gate-block .gate-sub { font-size: 10px; color: #ef4444; margin-top: 2px; }
+
+/* ── PIPELINE V2 ── */
+.pipeline-v2 {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  gap: 0;
+  align-items: center;
+}
+.pipeline-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pipeline-col-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: #94a3b8;
+  margin-bottom: 4px;
+  text-align: center;
+}
+.pv2-block {
+  border-radius: 10px;
+  padding: 12px 14px;
+  border: 2px solid;
+  position: relative;
+}
+.pv2-block .pv2-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+.pv2-block .pv2-name  { font-size: 13px; font-weight: 700; color: #1e293b; line-height: 1.3; }
+.pv2-block .pv2-count { font-size: 11px; margin-top: 5px; }
+.pv2-block .pv2-badge { display: inline-block; margin-top: 6px; padding: 2px 9px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+
+.pv2-livre    { background: #eff6ff; border-color: #3b82f6; }
+.pv2-livre .pv2-label { color: #1e40af; }
+.pv2-livre .pv2-count { color: #3b82f6; }
+.pv2-livre .pv2-badge { background: #dbeafe; color: #1e40af; }
+
+.pv2-bloqueado { background: #fffbeb; border-color: #f59e0b; }
+.pv2-bloqueado .pv2-label { color: #92400e; }
+.pv2-bloqueado .pv2-count { color: #f59e0b; }
+.pv2-bloqueado .pv2-badge { background: #fef3c7; color: #92400e; }
+
+.pv2-final { background: #faf5ff; border-color: #7c3aed; }
+.pv2-final .pv2-label { color: #5b21b6; }
+.pv2-final .pv2-count { color: #7c3aed; }
+.pv2-final .pv2-badge { background: #ede9fe; color: #5b21b6; }
+
+/* Front-End interno: sequência de fases */
+.fe-seq {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+}
+.fe-step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #475569;
+}
+.fe-step-dot {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #1a56db;
+  color: white;
+  font-size: 9px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.fe-step-arrow { color: #94a3b8; font-size: 10px; }
+
+/* Conector entre colunas */
+.pipeline-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  gap: 6px;
+}
+.pipeline-connector .arr { font-size: 24px; color: #94a3b8; }
+.pipeline-connector .dep-note {
+  font-size: 10px; color: #64748b; text-align: center;
+  max-width: 100px; line-height: 1.3;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+/* ATUSX barra especial */
+.atusx-bar {
+  margin-top: 18px;
+  background: #faf5ff;
+  border: 2px dashed #a78bfa;
+  border-radius: 10px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.atusx-bar .atusx-icon { font-size: 20px; }
+.atusx-bar .atusx-title { font-size: 13px; font-weight: 700; color: #5b21b6; }
+.atusx-bar .atusx-sub   { font-size: 11px; color: #7c3aed; margin-top: 2px; }
+.atusx-bar .atusx-badge {
+  margin-left: auto;
+  background: #e0e7ff; color: #3730a3;
+  border-radius: 10px; padding: 4px 12px;
+  font-size: 11px; font-weight: 700;
+}
+
+/* ── TEMAS ── */
+.temas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 18px; margin-bottom: 32px; }
+.tema-card { background: white; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.08); overflow: hidden; }
+.tema-header {
+  padding: 14px 18px; display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid #f1f5f9; cursor: pointer; user-select: none;
+}
+.tema-header:hover { background: #fafbfc; }
+.tema-header-left { display: flex; align-items: center; gap: 10px; }
+.tema-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.tema-title   { font-size: 13px; font-weight: 700; color: #1e293b; line-height: 1.3; }
+.tema-subtitle{ font-size: 11px; color: #64748b; margin-top: 2px; }
+.tema-header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.tema-count    { font-size: 20px; font-weight: 700; color: #1e3a5f; }
+.tema-count-lbl{ font-size: 10px; color: #94a3b8; text-transform: uppercase; }
+.chevron { font-size: 12px; color: #94a3b8; transition: transform .2s; margin-top: 4px; }
+.tema-card.open .chevron { transform: rotate(180deg); }
+.tema-body { display: none; }
+.tema-card.open .tema-body { display: block; }
+.tema-meta {
+  padding: 12px 18px; background: #f8fafc; border-bottom: 1px solid #f1f5f9;
+  display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+}
+.dep-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+.dep-livre    { background: #d1fae5; color: #065f46; }
+.dep-bloqueado{ background: #fef3c7; color: #92400e; }
+.dep-aguarda  { background: #ede9fe; color: #5b21b6; }
+.dep-especial { background: #e0e7ff; color: #3730a3; }
+.tema-progress { padding: 12px 18px; border-bottom: 1px solid #f1f5f9; }
+.tema-progress-label { display: flex; justify-content: space-between; font-size: 11px; color: #64748b; margin-bottom: 6px; }
+.tema-progress-pct { font-weight: 700; color: #1e293b; }
+.tema-issues { padding: 0; }
+.issue-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 18px; border-bottom: 1px solid #f8fafc; transition: background .1s;
+}
+.issue-row:last-child { border-bottom: none; }
+.issue-row:hover { background: #f8fafc; }
+.issue-id { font-family: monospace; font-size: 10px; color: #475569; min-width: 80px; flex-shrink: 0; }
+.issue-id a, .edit-id a {
+  color: inherit; text-decoration: none;
+}
+.issue-id a:hover, .edit-id a:hover {
+  text-decoration: underline; color: #1a56db;
+}
+.issue-name { flex: 1; font-size: 12px; color: #374151; }
+
+/* ── BADGES ── */
+.badge { display: inline-flex; align-items: center; border-radius: 12px; padding: 2px 9px; font-size: 10px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+.s-concluido          { background: #dcfce7; color: #166534; }
+.s-code-review        { background: #cffafe; color: #155e75; }
+.s-em-desenvolvimento { background: #dbeafe; color: #1e40af; }
+.s-comprometido       { background: #fef3c7; color: #92400e; }
+.s-backlog            { background: #f1f5f9; color: #64748b; }
+.s-planejado          { background: #ede9fe; color: #5b21b6; }
+.s-em-teste           { background: #ffedd5; color: #c2410c; }
+.s-especial           { background: #e0e7ff; color: #3730a3; }
+
+/* ── TABELA ── */
+.section-title { font-size: 14px; font-weight: 700; color: #1e3a5f; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.section-title span { background: #e0e7ff; color: #3730a3; border-radius: 12px; padding: 2px 10px; font-size: 11px; font-weight: 600; }
+.table-wrap { background: white; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.08); overflow: hidden; margin-bottom: 32px; }
+.filter-bar { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.filter-bar input { border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 10px; font-size: 12px; outline: none; width: 220px; color: #1e293b; }
+.filter-bar input:focus { border-color: #3b82f6; }
+.filter-btn { border: 1px solid #e2e8f0; background: white; border-radius: 6px; padding: 5px 12px; font-size: 11px; cursor: pointer; color: #475569; transition: all .15s; }
+.filter-btn:hover, .filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
+table { width: 100%; border-collapse: collapse; }
+thead th { background: #f8fafc; padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .5px; border-bottom: 2px solid #e2e8f0; white-space: nowrap; }
+tbody tr { border-bottom: 1px solid #f1f5f9; transition: background .1s; }
+tbody tr:hover { background: #f8fafc; }
+tbody tr:last-child { border-bottom: none; }
+td { padding: 9px 14px; vertical-align: middle; }
+.entity-name { font-weight: 600; color: #1e293b; font-size: 12px; }
+
+/* ═══════════════════════════════════════════
+   PAINEL DE EDIÇÃO
+═══════════════════════════════════════════ */
+.overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+.overlay.open { display: block; }
+
+.edit-panel {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: 520px;
+  max-width: 95vw;
+  background: white;
+  z-index: 1001;
+  display: flex; flex-direction: column;
+  box-shadow: -8px 0 32px rgba(0,0,0,.18);
+  transform: translateX(100%);
+  transition: transform .28s cubic-bezier(.4,0,.2,1);
+}
+.edit-panel.open { transform: translateX(0); }
+
+.edit-panel-header {
+  background: linear-gradient(135deg, #1e3a5f 0%, #1a56db 100%);
+  color: white;
+  padding: 20px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.edit-panel-header h2 { font-size: 16px; font-weight: 700; }
+.edit-panel-header p  { font-size: 11px; opacity: .8; margin-top: 3px; }
+.btn-close {
+  background: rgba(255,255,255,.2); border: none;
+  color: white; border-radius: 50%; width: 32px; height: 32px;
+  cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+.btn-close:hover { background: rgba(255,255,255,.35); }
+
+.edit-toolbar {
+  padding: 12px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex; gap: 8px; align-items: center; flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.edit-toolbar input {
+  flex: 1; min-width: 160px;
+  border: 1px solid #e2e8f0; border-radius: 6px;
+  padding: 6px 10px; font-size: 12px; outline: none; color: #1e293b;
+}
+.edit-toolbar input:focus { border-color: #3b82f6; }
+.edit-toolbar select {
+  border: 1px solid #e2e8f0; border-radius: 6px;
+  padding: 5px 8px; font-size: 12px; outline: none; color: #475569;
+  background: white; cursor: pointer;
+}
+
+.edit-list {
+  flex: 1; overflow-y: auto;
+  padding: 8px 0;
+}
+
+.edit-group-header {
+  padding: 8px 20px 4px;
+  font-size: 10px; font-weight: 700;
+  color: #94a3b8; text-transform: uppercase; letter-spacing: .6px;
+  background: #f8fafc;
+  border-top: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex; align-items: center; gap: 8px;
+}
+.edit-group-header span { font-size: 14px; }
+
+.edit-issue-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px;
+  border-bottom: 1px solid #f8fafc;
+  transition: background .1s;
+}
+.edit-issue-row:last-child { border-bottom: none; }
+.edit-issue-row:hover { background: #f8fafc; }
+.edit-issue-row.hidden { display: none; }
+
+.edit-id {
+  font-family: monospace; font-size: 10px; color: #475569;
+  min-width: 78px; flex-shrink: 0;
+}
+.edit-name { flex: 1; font-size: 11px; color: #374151; line-height: 1.3; }
+
+.status-select {
+  border: 1px solid #e2e8f0; border-radius: 6px;
+  padding: 4px 6px; font-size: 11px; font-weight: 600;
+  cursor: pointer; outline: none; flex-shrink: 0;
+  transition: border-color .15s;
+  max-width: 148px;
+}
+.status-select:focus { border-color: #3b82f6; }
+.status-select.s-concluido          { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+.status-select.s-code-review        { background: #cffafe; color: #155e75; border-color: #a5f3fc; }
+.status-select.s-em-desenvolvimento { background: #dbeafe; color: #1e40af; border-color: #bfdbfe; }
+.status-select.s-comprometido       { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+.status-select.s-backlog            { background: #f1f5f9; color: #64748b; border-color: #e2e8f0; }
+.status-select.s-planejado          { background: #ede9fe; color: #5b21b6; border-color: #ddd6fe; }
+.status-select.s-em-teste           { background: #ffedd5; color: #c2410c; border-color: #fed7aa; }
+
+.edit-panel-footer {
+  padding: 16px 20px;
+  border-top: 1px solid #f1f5f9;
+  display: flex; gap: 10px; align-items: center; flex-shrink: 0;
+  background: #fafbfc;
+}
+.btn-salvar {
+  background: #1a56db; color: white;
+  border: none; border-radius: 8px;
+  padding: 9px 22px; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all .15s;
+  display: flex; align-items: center; gap: 6px;
+}
+.btn-salvar:hover { background: #1e40af; transform: translateY(-1px); }
+.btn-resetar {
+  background: white; color: #ef4444;
+  border: 1px solid #fca5a5; border-radius: 8px;
+  padding: 9px 16px; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all .15s;
+}
+.btn-resetar:hover { background: #fef2f2; }
+.saved-msg {
+  font-size: 11px; color: #22c55e; font-weight: 600;
+  display: none; align-items: center; gap: 4px;
+}
+.saved-msg.show { display: flex; }
+
+/* ── FOOTER ── */
+.footer { text-align: center; padding: 20px; font-size: 11px; color: #94a3b8; }
+
+/* ── MODAL SENHA ── */
+.senha-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.55);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(3px);
+}
+.senha-overlay.open { display: flex; }
+.senha-modal {
+  background: white;
+  border-radius: 14px;
+  padding: 32px 36px;
+  width: 340px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+  text-align: center;
+}
+.senha-modal h3 { font-size: 18px; font-weight: 700; color: #1e3a5f; margin-bottom: 6px; }
+.senha-modal p  { font-size: 13px; color: #64748b; margin-bottom: 20px; }
+.senha-modal input {
+  width: 100%; border: 2px solid #e2e8f0;
+  border-radius: 8px; padding: 10px 14px;
+  font-size: 15px; outline: none; text-align: center;
+  letter-spacing: 3px; color: #1e293b;
+  margin-bottom: 16px;
+}
+.senha-modal input:focus { border-color: #1a56db; }
+.senha-modal input.erro  { border-color: #ef4444; animation: shake .3s; }
+@keyframes shake {
+  0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
+}
+.senha-btns { display: flex; gap: 10px; }
+.btn-entrar {
+  flex: 1; background: #1a56db; color: white;
+  border: none; border-radius: 8px; padding: 10px;
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  transition: background .15s;
+}
+.btn-entrar:hover { background: #1e40af; }
+.btn-cancelar {
+  flex: 1; background: #f1f5f9; color: #475569;
+  border: none; border-radius: 8px; padding: 10px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: background .15s;
+}
+.btn-cancelar:hover { background: #e2e8f0; }
+.senha-erro { font-size: 12px; color: #ef4444; margin-top: 10px; min-height: 18px; }
+
+/* ── STATUS FIREBASE ── */
+.fb-status {
+  position: fixed; bottom: 16px; right: 16px;
+  background: white; border-radius: 8px;
+  padding: 8px 14px; font-size: 11px; font-weight: 600;
+  box-shadow: 0 2px 10px rgba(0,0,0,.12);
+  display: none; align-items: center; gap: 6px;
+  z-index: 500;
+}
+.fb-status.show { display: flex; }
+.fb-status.ok   { color: #166534; border-left: 3px solid #22c55e; }
+.fb-status.err  { color: #991b1b; border-left: 3px solid #ef4444; }
+.fb-status.load { color: #1e40af; border-left: 3px solid #3b82f6; }
+</style>
+</head>
+<body>
+
+<!-- ══ MODAL SENHA ══ -->
+<div class="senha-overlay" id="senhaOverlay">
+  <div class="senha-modal">
+    <h3>🔒 Acesso Restrito</h3>
+    <p>Digite a senha para editar os status das issues</p>
+    <input type="password" id="senhaInput" placeholder="••••••••"
+      onkeydown="if(event.key==='Enter')confirmarSenha()">
+    <div class="senha-btns">
+      <button class="btn-entrar" onclick="confirmarSenha()">Entrar</button>
+      <button class="btn-cancelar" onclick="fecharSenha()">Cancelar</button>
+    </div>
+    <div class="senha-erro" id="senhaErro"></div>
+  </div>
+</div>
+
+<!-- ══ INDICADOR FIREBASE ══ -->
+<div class="fb-status" id="fbStatus"></div>
+
+<!-- ══ OVERLAY ══ -->
+<div class="overlay" id="overlay" onclick="fecharPainel()"></div>
+
+<!-- ══ PAINEL DE EDIÇÃO ══ -->
+<div class="edit-panel" id="editPanel">
+  <div class="edit-panel-header">
+    <div>
+      <h2>✏️ Atualizar Status das Issues</h2>
+      <p>Alterações salvas automaticamente no browser</p>
+    </div>
+    <button class="btn-close" onclick="fecharPainel()">✕</button>
+  </div>
+
+  <div class="edit-toolbar">
+    <input type="text" id="edit-search" placeholder="🔍 Filtrar por ID ou nome..." oninput="filtrarEditar()">
+    <select id="edit-filter-tema" onchange="filtrarEditar()">
+      <option value="">Todos os temas</option>
+      <option value="atusx">ATUSX</option>
+      <option value="backend">Back-End</option>
+      <option value="ia1">Front-End com IA</option>
+      <option value="query">Query</option>
+      <option value="link">Link Front-End</option>
+      <option value="get">GET</option>
+      <option value="automacao">Automação</option>
+    </select>
+    <select id="edit-filter-status" onchange="filtrarEditar()">
+      <option value="">Todos os status</option>
+      <option value="Concluído">Concluído</option>
+      <option value="Code Review Concluído">Code Review</option>
+      <option value="Em Teste">Em Teste</option>
+      <option value="Em Desenvolvimento">Em Desenvolvimento</option>
+      <option value="Comprometido">Comprometido</option>
+      <option value="Backlog">Backlog</option>
+      <option value="Planejado">Planejado</option>
+    </select>
+  </div>
+
+  <div class="edit-list" id="editList">
+    <!-- Gerado pelo JS -->
+  </div>
+
+  <div class="edit-panel-footer">
+    <button class="btn-salvar" onclick="salvarAlteracoes()">💾 Salvar e Fechar</button>
+    <button class="btn-resetar" onclick="resetarTudo()">↩ Redefinir tudo</button>
+    <span class="saved-msg" id="savedMsg">✓ Salvo!</span>
+  </div>
+</div>
+
+<!-- ══ HEADER ══ -->
+<div class="header">
+  <div class="header-left">
+    <h1>🗂 DVARPR-8 — Catálogo de Produtos</h1>
+    <p>Visão Gerencial por Temas · Épico Back-End + Automação</p>
+  </div>
+  <div class="header-right">
+    <div class="header-badge">81 Issues</div>
+    <div class="header-badge">7 Temas</div>
+    <div class="header-badge" id="hdr-pct">Calculando...</div>
+    <button class="btn-edit" onclick="abrirPainel()">✏️ Atualizar Status</button>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ══ KPI CARDS ══ -->
+<div class="kpi-row">
+  <div class="kpi-card c-concluido">
+    <div class="num" id="kpi-concluido">—</div>
+    <div class="lbl">Concluído</div>
+    <div class="sub" id="kpi-concluido-sub"></div>
+  </div>
+  <div class="kpi-card c-code-review">
+    <div class="num" id="kpi-cr">—</div>
+    <div class="lbl">Code Review</div>
+    <div class="sub" id="kpi-cr-sub"></div>
+  </div>
+  <div class="kpi-card c-em-desenvolvimento">
+    <div class="num" id="kpi-dev">—</div>
+    <div class="lbl">Em Desenvolvimento</div>
+    <div class="sub" id="kpi-dev-sub"></div>
+  </div>
+  <div class="kpi-card c-comprometido">
+    <div class="num" id="kpi-comp">—</div>
+    <div class="lbl">Comprometido</div>
+    <div class="sub" id="kpi-comp-sub"></div>
+  </div>
+  <div class="kpi-card c-em-teste">
+    <div class="num" id="kpi-emteste">—</div>
+    <div class="lbl">Em Teste</div>
+    <div class="sub" id="kpi-emteste-sub"></div>
+  </div>
+  <div class="kpi-card c-backlog">
+    <div class="num" id="kpi-backlog">—</div>
+    <div class="lbl">Backlog</div>
+    <div class="sub" id="kpi-backlog-sub"></div>
+  </div>
+  <div class="kpi-card c-planejado">
+    <div class="num" id="kpi-plan">—</div>
+    <div class="lbl">Planejado</div>
+    <div class="sub" id="kpi-plan-sub"></div>
+  </div>
+  <div class="kpi-card c-total">
+    <div class="num">81</div>
+    <div class="lbl">Total Issues</div>
+    <div class="sub">54 existentes · 27 novos</div>
+  </div>
+</div>
+
+<!-- ══ COMPLETUDE GERAL ══ -->
+<div class="completude-box">
+  <h3>📊 Completude Geral do Projeto</h3>
+  <div style="display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;">
+    <div>
+      <div class="completude-pct" id="pct-geral">—</div>
+      <div class="completude-sub">do projeto concluído (ponderado por esforço)</div>
+    </div>
+    <div style="flex:1;min-width:200px;">
+      <div class="bar-track" id="bar-geral"></div>
+      <div class="legend-row">
+        <div class="leg-item"><div class="leg-dot" style="background:#22c55e"></div>Concluído</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#06b6d4"></div>Code Review</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#f97316"></div>Em Teste</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#3b82f6"></div>Em Desenvolvimento</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#f59e0b"></div>Comprometido</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#94a3b8"></div>Backlog</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#a78bfa"></div>Planejado</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PIPELINE ══ -->
+<div class="pipeline-box">
+  <h3>🔀 Pipeline de Fases e Dependências</h3>
+
+  <div class="pipeline-v2">
+
+    <!-- ── COLUNA 1: PARALELO ── -->
+    <div class="pipeline-col">
+      <div class="pipeline-col-label">⚡ Fase 1 · Paralelismo — Sem Impedimento</div>
+
+      <!-- Back-End -->
+      <div class="pv2-block pv2-livre">
+        <div class="pv2-label">⚙️ Back-End</div>
+        <div class="pv2-name">APIs REST · ERP Protheus</div>
+        <div class="pv2-count">26 issues</div>
+        <div class="pv2-badge">Livre para iniciar</div>
+      </div>
+
+      <!-- Front-End / IA -->
+      <div class="pv2-block pv2-livre">
+        <div class="pv2-label">🤖 Front-End · Agente de IA</div>
+        <div class="pv2-name">Protótipo de Alta Fidelidade</div>
+        <div class="pv2-count">3 issues · sequência interna</div>
+        <div class="fe-seq">
+          <div class="fe-step">
+            <div class="fe-step-dot">1</div>
+            <span>DVARPR-130 · Fase 1.1</span>
+          </div>
+          <div class="fe-step" style="padding-left:6px;">
+            <div class="fe-step-arrow">↓</div>
+          </div>
+          <div class="fe-step">
+            <div class="fe-step-dot">2</div>
+            <span>DVARPR-457 · Fase 1.2</span>
+          </div>
+          <div class="fe-step" style="padding-left:6px;">
+            <div class="fe-step-arrow">↓</div>
+          </div>
+          <div class="fe-step">
+            <div class="fe-step-dot">3</div>
+            <span>DVARPR-462 · Fase 2.0</span>
+          </div>
+        </div>
+        <div class="pv2-badge" style="margin-top:10px;">Livre para iniciar</div>
+      </div>
+
+      <!-- Query -->
+      <div class="pv2-block pv2-livre">
+        <div class="pv2-label">🔍 Query · Busca Inteligente</div>
+        <div class="pv2-name">Query Robusta de SKU</div>
+        <div class="pv2-count">1 issue (DVARPV-6716)</div>
+        <div class="pv2-badge">Livre para iniciar</div>
+      </div>
+    </div>
+
+    <!-- ── CONECTOR 1→2 ── -->
+    <div class="pipeline-connector">
+      <div class="arr">⟹</div>
+      <div class="dep-note">Front-End concluído + Back-End correspondente concluído</div>
+    </div>
+
+    <!-- ── COLUNA 2: DEPENDENTE ── -->
+    <div class="pipeline-col">
+      <div class="pipeline-col-label">🔒 Fase 2 · Aguarda Fase 1</div>
+
+      <!-- Link FE x API -->
+      <div class="pv2-block pv2-bloqueado">
+        <div class="pv2-label">🔗 Link Front-End x API</div>
+        <div class="pv2-name">Integração telas PO-UI</div>
+        <div class="pv2-count">26 issues</div>
+        <div style="font-size:10px;color:#92400e;margin-top:6px;line-height:1.4;">
+          ⚠ Cada story libera individualmente quando o Front-End estiver concluído e a Back-End correspondente também
+        </div>
+        <div class="pv2-badge">Aguarda Fase 1</div>
+      </div>
+
+      <!-- GET -->
+      <div class="pv2-block pv2-bloqueado">
+        <div class="pv2-label">📡 GET · Consultas de Interface</div>
+        <div class="pv2-name">Endpoints para combos e modais</div>
+        <div class="pv2-count">15 issues</div>
+        <div class="pv2-badge">Aguarda Front-End + Back-End</div>
+      </div>
+    </div>
+
+    <!-- ── CONECTOR 2→3 ── -->
+    <div class="pipeline-connector">
+      <div class="arr">⟹</div>
+      <div class="dep-note">Todas as fases anteriores concluídas</div>
+    </div>
+
+    <!-- ── COLUNA 3: FINAL ── -->
+    <div class="pipeline-col">
+      <div class="pipeline-col-label">🏁 Fase 3 · Aguarda Fases 1 e 2</div>
+
+      <div class="pv2-block pv2-final">
+        <div class="pv2-label">🔄 Automação</div>
+        <div class="pv2-name">Processos críticos do catálogo</div>
+        <div class="pv2-count">9 issues</div>
+        <div class="pv2-badge">Aguarda tudo anterior</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── ATUSX: barra especial ── -->
+  <div class="atusx-bar">
+    <div class="atusx-icon">🗄️</div>
+    <div>
+      <div class="atusx-title">ATUSX — Modelagem e Dicionário de Dados · DVARPR-35</div>
+      <div class="atusx-sub">Aberta durante todo o projeto para manutenções no dicionário (AtuSX). Encerrada somente após a conclusão da Automação.</div>
+    </div>
+    <div class="atusx-badge">♾ Sempre Aberta</div>
+  </div>
+
+</div>
+
+<!-- ══ TEMAS ══ -->
+<div class="section-title" style="margin-bottom:16px;">
+  📁 Issues por Tema <span>7 temas · 81 issues</span>
+</div>
+<div class="temas-grid" id="temas-grid"></div>
+
+<!-- ══ TABELA COMPLETA ══ -->
+<div class="section-title">
+  📋 Todas as Issues <span id="table-count">69 issues</span>
+</div>
+<div class="table-wrap">
+  <div class="filter-bar">
+    <input type="text" id="search-input" placeholder="🔍 Buscar por ID ou nome..." oninput="applyFilters()">
+    <button class="filter-btn active" onclick="setFilter('todos',this)">Todos</button>
+    <button class="filter-btn" onclick="setFilter('Back-End',this)">Back-End</button>
+    <button class="filter-btn" onclick="setFilter('Link Front-End',this)">Link FE</button>
+    <button class="filter-btn" onclick="setFilter('GET',this)">GET</button>
+    <button class="filter-btn" onclick="setFilter('Automação',this)">Automação</button>
+    <button class="filter-btn" onclick="setFilter('Query',this)">Query</button>
+    <button class="filter-btn" onclick="setFilter('Front-End',this)">Front-End IA</button>
+    <button class="filter-btn" onclick="setFilter('ATUSX',this)">ATUSX</button>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Tema</th>
+        <th>Status</th>
+        <th>Impedimento</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+</div><!-- /main -->
+<div class="footer">DVARPR-8 — Épico Catálogo de Produtos · ERP TOTVS Protheus · Visão Gerencial v2</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<script>
+// ══ DADOS BASE ══
+const STATUS_WEIGHT = {
+  'Concluído': 100,
+  'Code Review Concluído': 80,
+  'Em Teste': 65,
+  'Em Desenvolvimento': 40,
+  'Comprometido': 20,
+  'Backlog': 0,
+  'Planejado': 0,
+};
+const STATUS_OPTIONS = [
+  'Concluído',
+  'Code Review Concluído',
+  'Em Teste',
+  'Em Desenvolvimento',
+  'Comprometido',
+  'Backlog',
+  'Planejado',
+];
+
+const TEMAS_BASE = [
+  {
+    id: 'atusx', nome: 'ATUSX — Modelagem e Dicionário', icone: '🗄️', iconeBg: '#e0e7ff',
+    descricao: 'Permanece aberta para manutenções no dicionário de dados. Fechada apenas ao fim do catálogo.',
+    impedimento: 'Nenhum · Sempre aberto', impClass: 'dep-especial', fase: 'Especial',
+    issues: [
+      { id: 'DVARPR-35', nome: '1.1 - Modelagem e criação de tabelas - ATUSX', status: 'Em Desenvolvimento', novo: false },
+    ]
+  },
+  {
+    id: 'backend', nome: 'Back-End', icone: '⚙️', iconeBg: '#dbeafe',
+    descricao: 'APIs REST para persistência e consulta no ERP Protheus. Sem impedimentos.',
+    impedimento: 'Nenhum — pode iniciar agora', impClass: 'dep-livre', fase: 'Fase 1',
+    issues: [
+      { id: 'DVARPR-209', nome: 'Back-End - Cadastro de Transmissão',                status: 'Concluído',              novo: false },
+      { id: 'DVARPR-25',  nome: 'Back-End - Cadastros de Marca',                     status: 'Concluído',              novo: false },
+      { id: 'DVARPR-29',  nome: 'Back-End - Cadastros de Montadoras',                status: 'Concluído',              novo: false },
+      { id: 'DVARPR-32',  nome: 'Back-End - Cadastro de Modelo de Transmissão',      status: 'Concluído',              novo: false },
+      { id: 'DVARPR-90',  nome: 'Back-End - Veículos',                               status: 'Concluído',              novo: false },
+      { id: 'DVARPR-123', nome: 'Back-End - Conjunto Sistema',                       status: 'Code Review Concluído',  novo: false },
+      { id: 'DVARPR-115', nome: 'Back-End - Cadastro de Motorização',                status: 'Em Desenvolvimento',     novo: false },
+      { id: 'DVARPR-116', nome: 'Back-End - Produto x Fabricante',                   status: 'Em Desenvolvimento',     novo: false },
+      { id: 'DVARPR-121', nome: 'Back-End - Similares',                              status: 'Comprometido',           novo: false },
+      { id: 'DVARPR-117', nome: 'Back-End - Modelo Veículo',                         status: 'Backlog',                novo: false },
+      { id: 'DVARPR-118', nome: 'Back-End - Modelo Veículo Prod / Aplicação',        status: 'Backlog',                novo: false },
+      { id: 'DVARPR-119', nome: 'Back-End - Cadastros Modelo de Transmissão',        status: 'Backlog',                novo: false },
+      { id: 'DVARPR-120', nome: 'Back-End - Cadastros de Códigos de Referências',    status: 'Backlog',                novo: false },
+      { id: 'DVARPR-122', nome: 'Back-End - Relacionados / Sugestão de Vendas',      status: 'Backlog',                novo: false },
+      { id: 'DVARPR-124', nome: 'Back-End - Conjunto Sistema x Grupo de Produto',    status: 'Backlog',                novo: false },
+      { id: 'DVARPR-125', nome: 'Back-End - Categoria x Grupo/Produtos',             status: 'Backlog',                novo: false },
+      { id: 'DVARPR-133', nome: 'Back-End - Cadastros de Produto x Características', status: 'Backlog',                novo: false },
+      { id: 'DVARPR-134', nome: 'Back-End - Produtos',                               status: 'Backlog',                novo: false },
+      { id: 'DVARPR-135', nome: 'Back-End - Dados Adicionais do Produto',            status: 'Backlog',                novo: false },
+      { id: 'DVARPR-136', nome: 'Back-End - Fornecedor/Fabricante',                  status: 'Backlog',                novo: false },
+      { id: 'DVARPR-137', nome: 'Back-End - Grupo de Produto',                       status: 'Backlog',                novo: false },
+      { id: 'DVARPR-138', nome: 'Back-End - Categorias',                             status: 'Backlog',                novo: false },
+      { id: 'DVARPR-139', nome: 'Back-End - Características de Produto',             status: 'Backlog',                novo: false },
+      { id: 'DVARPR-393', nome: 'Back-End - Eixo x Modelo Veículo',                  status: 'Backlog',                novo: false },
+      { id: 'DVARPR-394', nome: 'Back-End - Cadastros de Eixo',                      status: 'Backlog',                novo: false },
+      { id: 'DVARPR-395', nome: 'Back-End - Cadastros Modelo do Eixo',               status: 'Backlog',                novo: false },
+    ]
+  },
+  {
+    id: 'ia1', nome: 'Front-End com IA', icone: '🤖', iconeBg: '#d1fae5',
+    descricao: 'Desenvolvimento do Agente de IA — Protótipo de Alta Fidelidade. Sequência interna: Fase 1.1 → Fase 1.2 → Fase 2.0.',
+    impedimento: 'Nenhum — pode iniciar agora', impClass: 'dep-livre', fase: 'Fase 1',
+    issues: [
+      { id: 'DVARPR-130', nome: 'Início do desenvolvimento do Agente de IA - Protótipo de Alta - Fase 1.1', status: 'Em Desenvolvimento', novo: false },
+      { id: 'DVARPR-457', nome: 'Início do desenvolvimento do Agente de IA - Protótipo de Alta - Fase 1.2', status: 'Comprometido',       novo: false },
+      { id: 'DVARPR-462', nome: 'Ajuste do desenvolvimento do Agente de IA - Protótipo de Alta - Fase 2.0', status: 'Comprometido',      novo: false },
+    ]
+  },
+  {
+    id: 'query', nome: 'Query — Busca Inteligente', icone: '🔍', iconeBg: '#fce7f3',
+    descricao: 'Camada de query para busca inteligente de produtos com score de relevância.',
+    impedimento: 'Nenhum — pode iniciar agora', impClass: 'dep-livre', fase: 'Fase 1',
+    issues: [
+      { id: 'DVARPV-6716', nome: 'Query - Desenvolvimento da Query Robusta de Busca de Produto (SKU)', status: 'Backlog', novo: true },
+    ]
+  },
+  {
+    id: 'link', nome: 'Link Front-End x API', icone: '🔗', iconeBg: '#fef3c7',
+    descricao: 'Integração das telas PO-UI existentes com as APIs Back-End.',
+    impedimento: 'Bloqueado por DVARPR-462', impClass: 'dep-bloqueado', fase: 'Fase 2',
+    issues: [
+      { id: 'DVARPR-396', nome: 'Link Front-End x API - Montadora',                              status: 'Backlog', novo: false },
+      { id: 'DVARPR-397', nome: 'Link Front-End x API - Marca',                                  status: 'Backlog', novo: false },
+      { id: 'DVARPR-398', nome: 'Link Front-End x API - Transmissão',                            status: 'Backlog', novo: false },
+      { id: 'DVARPR-399', nome: 'Link Front-End x API - Veículo',                                status: 'Backlog', novo: false },
+      { id: 'DVARPR-400', nome: 'Link Front-End x API - Modelo de Veículo',                      status: 'Backlog', novo: false },
+      { id: 'DVARPR-401', nome: 'Link Front-End x API - Modelo Veículo Prod / Aplicação',        status: 'Backlog', novo: false },
+      { id: 'DVARPR-405', nome: 'Link Front-End x API - Modelo de Transmissão',                  status: 'Backlog', novo: false },
+      { id: 'DVARPR-406', nome: 'Link Front-End x API - Códigos de Referências',                 status: 'Backlog', novo: false },
+      { id: 'DVARPR-407', nome: 'Link Front-End x API - Relacionados / Sugestão de Vendas',      status: 'Backlog', novo: false },
+      { id: 'DVARPR-408', nome: 'Link Front-End x API - Conjunto Sistema x Grupo de Produto',    status: 'Backlog', novo: false },
+      { id: 'DVARPR-409', nome: 'Link Front-End x API - Categoria x Grupo/Produtos',             status: 'Backlog', novo: false },
+      { id: 'DVARPR-410', nome: 'Link Front-End x API - Cadastros de Produto x Características', status: 'Backlog', novo: false },
+      { id: 'DVARPR-411', nome: 'Link Front-End x API - Produtos',                               status: 'Backlog', novo: false },
+      { id: 'DVARPR-412', nome: 'Link Front-End x API - Dados Adicionais do Produto',            status: 'Backlog', novo: false },
+      { id: 'DVARPR-413', nome: 'Link Front-End x API - Fornecedor/Fabricante',                  status: 'Backlog', novo: false },
+      { id: 'DVARPR-414', nome: 'Link Front-End x API - Grupo de Produto',                       status: 'Backlog', novo: false },
+      { id: 'DVARPR-415', nome: 'Link Front-End x API - Categorias',                             status: 'Backlog', novo: false },
+      { id: 'DVARPR-419', nome: 'Link Front-End x API - Características de Produto',             status: 'Backlog', novo: false },
+      { id: 'DVARPR-420', nome: 'Link Front-End x API - Conjunto Sistema',                       status: 'Backlog', novo: false },
+      { id: 'DVARPR-421', nome: 'Link Front-End x API - Motorização',                            status: 'Backlog', novo: false },
+      { id: 'DVARPR-422', nome: 'Link Front-End x API - Produto x Fabricante',                   status: 'Backlog', novo: false },
+      { id: 'DVARPR-423', nome: 'Link Front-End x API - Similares',                              status: 'Backlog', novo: false },
+      { id: 'DVARPR-424', nome: 'Link Front-End x API - Cadastro de Transmissão',                status: 'Backlog', novo: false },
+      { id: 'DVARPR-425', nome: 'Link Front-End x API - Eixo x Modelo Veículo',                  status: 'Backlog', novo: false },
+      { id: 'DVARPR-426', nome: 'Link Front-End x API - Cadastros de Eixo',                      status: 'Backlog', novo: false },
+      { id: 'DVARPR-427', nome: 'Link Front-End x API - Cadastros Modelo do Eixo',               status: 'Backlog', novo: false },
+    ]
+  },
+  {
+    id: 'get', nome: 'GET — Consultas de Interface', icone: '📡', iconeBg: '#fef9c3',
+    descricao: 'Endpoints de consulta para popular combos, modais e listagens no Front-End.',
+    impedimento: 'Bloqueado por DVARPR-462', impClass: 'dep-bloqueado', fase: 'Fase 2',
+    issues: [
+      { id: 'DVARPR-441', nome: 'GET - Listagem de Produtos com Filtro de Status',                                          status: 'Backlog', novo: true },
+      { id: 'DVARPR-442', nome: 'GET - Totalizadores de Produtos por Status',                                               status: 'Backlog', novo: true },
+      { id: 'DVARPR-443', nome: 'GET - Busca Ampla de Produtos',                                                            status: 'Backlog', novo: true },
+      { id: 'DVARPR-447', nome: 'GET - Consulta de Domínios Genéricos via Tabela SX5',                                     status: 'Backlog', novo: true },
+      { id: 'DVARPR-448', nome: 'GET - Pesquisa de Fornecedor / Fabricante via Tabela SA2',                                 status: 'Backlog', novo: true },
+      { id: 'DVARPR-449', nome: 'GET - Leitura de Listas de Opções pelo Dicionário de Dados (SX3 — X3_CBOX)',               status: 'Backlog', novo: true },
+      { id: 'DVARPR-452', nome: 'GET - Edição de Produto: Descrição, Status Envio PDV e Marca',                             status: 'Backlog', novo: true },
+      { id: 'DVARPR-453', nome: 'GET - Códigos de Referência (MG5)',                                                        status: 'Backlog', novo: true },
+      { id: 'DVARPR-454', nome: 'GET - Vínculo de Fornecedor/Fabricante ao Produto (MG1)',                                  status: 'Backlog', novo: true },
+      { id: 'DVARPR-455', nome: 'GET - Atribuição de Conjunto Sistema na Aplicação de Produto (MF0)',                       status: 'Backlog', novo: true },
+      { id: 'DVARPR-456', nome: 'GET - Classificação Mercadológica: Consulta, Inclusão e Exclusão (ACV / ACU)',              status: 'Backlog', novo: true },
+      { id: 'DVARPR-467', nome: 'GET - API de Consulta de Características (D4V) — Combo da Interface',                     status: 'Backlog', novo: true },
+      { id: 'DVARPR-468', nome: 'GET - API — Modelo de Veículo no Catálogo: Consulta MEC, Vínculo e Exclusão (MF0)',        status: 'Backlog', novo: true },
+      { id: 'DVARPR-470', nome: 'GET - API — Similares: Listagem, Busca para Seleção, Inclusão e Exclusão (MFY)',           status: 'Backlog', novo: true },
+      { id: 'DVARPR-471', nome: 'GET - API — Comprados Juntos: Consulta, Inclusão e Exclusão (MFZ)',                        status: 'Backlog', novo: true },
+    ]
+  },
+  {
+    id: 'automacao', nome: 'Automação', icone: '🔄', iconeBg: '#ede9fe',
+    descricao: 'Automação de processos críticos do catálogo. Inicia após conclusão de todas as fases.',
+    impedimento: 'Aguardando todas as fases', impClass: 'dep-aguarda', fase: 'Fase 4',
+    issues: [
+      { id: 'DVARPR-473', nome: 'Automação - SX5 Consulta',                                     status: 'Backlog', novo: true },
+      { id: 'DVARPR-474', nome: 'Automação - campo X3_CBOX',                                    status: 'Backlog', novo: true },
+      { id: 'DVARPR-478', nome: 'Automação - GET - SX5 Consulta (Combos Genéricos)',             status: 'Backlog', novo: true },
+      { id: 'DVARPR-479', nome: 'Automação - GET - SX3 CBOX (Combos de Motorização)',            status: 'Backlog', novo: true },
+      { id: 'DVARPR-480', nome: 'Automação - GET - SA2 Busca de Fabricante',                     status: 'Backlog', novo: true },
+      { id: 'DVARPR-481', nome: 'Automação - GET - D4V Consulta (Combo de Características)',     status: 'Backlog', novo: true },
+      { id: 'DVARPR-482', nome: 'Automação - GET - SB1 Busca de Produto (Modal Similares)',      status: 'Backlog', novo: true },
+      { id: 'DVARPR-483', nome: 'Automação - GET - Busca Inteligente de Produto (Catálogo Geral)',status: 'Backlog', novo: true },
+      { id: 'DVARPR-484', nome: 'Automação - Interface: Catálogo Geral — Editar Produto',        status: 'Backlog', novo: true },
+    ]
+  },
+];
+
+// ══ FIREBASE ══
+const firebaseConfig = {
+  apiKey: "AIzaSyBETmJAssNh9-wkOjLkpWflkqWnjsNCJOw",
+  authDomain: "catalogodvarpr.firebaseapp.com",
+  databaseURL: "https://catalogodvarpr-default-rtdb.firebaseio.com",
+  projectId: "catalogodvarpr",
+  storageBucket: "catalogodvarpr.firebasestorage.app",
+  messagingSenderId: "79956495951",
+  appId: "1:79956495951:web:25348f74a520f815a2243a"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ══ SENHA (base64 — evita exposição direta no fonte) ══
+const SENHA_OK = 'UGFsbWVpcmFz'; // btoa('Palmeiras')
+
+// ══ DADOS ATIVOS ══
+let OVERRIDES = {};
+
+function getStatus(issueId, statusBase) {
+  return OVERRIDES[issueId] !== undefined ? OVERRIDES[issueId] : statusBase;
+}
+
+function getTemas() {
+  return TEMAS_BASE.map(t => ({
+    ...t,
+    issues: t.issues.map(i => ({ ...i, status: getStatus(i.id, i.status) }))
+  }));
+}
+
+// ══ UTILITÁRIOS ══
+const JIRA_BASE = 'https://jiraproducao.totvs.com.br/browse/';
+function idLink(id) {
+  return `<a href="${JIRA_BASE}${id}" target="_blank" rel="noopener noreferrer">${id}</a>`;
+}
+
+function statusClass(s) {
+  const m = {
+    'Concluído': 's-concluido',
+    'Code Review Concluído': 's-code-review',
+    'Em Teste': 's-em-teste',
+    'Em Desenvolvimento': 's-em-desenvolvimento',
+    'Comprometido': 's-comprometido',
+    'Backlog': 's-backlog',
+    'Planejado': 's-planejado',
+  };
+  return m[s] || 's-backlog';
+}
+function statusLabel(s) {
+  const m = {
+    'Concluído': '✓ Concluído',
+    'Code Review Concluído': '◎ Code Review',
+    'Em Teste': '🧪 Em Teste',
+    'Em Desenvolvimento': '▶ Em Dev',
+    'Comprometido': '⚠ Comprometido',
+    'Backlog': '· Backlog',
+    'Planejado': '✦ Planejado',
+  };
+  return m[s] || s;
+}
+function calcProgress(issues) {
+  const total = issues.length;
+  if (!total) return { pct: 0, counts: {} };
+  const counts = {};
+  let ws = 0;
+  issues.forEach(i => {
+    counts[i.status] = (counts[i.status]||0) + 1;
+    ws += (STATUS_WEIGHT[i.status]||0);
+  });
+  return { pct: Math.round(ws/total), counts, total };
+}
+function progressBarHtml(issues) {
+  const total = issues.length;
+  if (!total) return '';
+  const counts = {};
+  issues.forEach(i => { counts[i.status] = (counts[i.status]||0)+1; });
+  return [
+    ['Concluído','bar-concluido'],
+    ['Code Review Concluído','bar-codereview'],
+    ['Em Teste','bar-emteste'],
+    ['Em Desenvolvimento','bar-emdesenv'],
+    ['Comprometido','bar-comprometido'],
+    ['Planejado','bar-planejado'],
+    ['Backlog','bar-backlog'],
+  ].map(([s,cls]) => {
+    const n = counts[s]||0;
+    if (!n) return '';
+    return `<div class="bar-seg ${cls}" style="width:${(n/total*100).toFixed(1)}%" title="${s}: ${n}"></div>`;
+  }).join('');
+}
+
+// ══ RENDER TEMAS ══
+function renderTemas() {
+  const temas = getTemas();
+  document.getElementById('temas-grid').innerHTML = temas.map(t => {
+    const prog = calcProgress(t.issues);
+    return `
+    <div class="tema-card" id="tema-${t.id}">
+      <div class="tema-header" onclick="toggleTema('${t.id}')">
+        <div class="tema-header-left">
+          <div class="tema-icon" style="background:${t.iconeBg}">${t.icone}</div>
+          <div>
+            <div class="tema-title">${t.nome}</div>
+            <div class="tema-subtitle">${t.fase}</div>
+          </div>
+        </div>
+        <div class="tema-header-right">
+          <div class="tema-count">${t.issues.length}</div>
+          <div class="tema-count-lbl">issues</div>
+          <div class="chevron">▼</div>
+        </div>
+      </div>
+      <div class="tema-body">
+        <div class="tema-meta">
+          <span class="dep-badge ${t.impClass}">🔒 ${t.impedimento}</span>
+          <span style="font-size:11px;color:#64748b;">${t.descricao}</span>
+        </div>
+        <div class="tema-progress">
+          <div class="tema-progress-label">
+            <span>Progresso (esforço ponderado)</span>
+            <span class="tema-progress-pct">${prog.pct}%</span>
+          </div>
+          <div class="bar-track">${progressBarHtml(t.issues)}</div>
+        </div>
+        <div class="tema-issues">
+          ${t.issues.map(i => `
+          <div class="issue-row">
+            <span class="issue-id">${idLink(i.id)}</span>
+            <span class="issue-name">${i.nome}</span>
+            <span class="badge ${statusClass(i.status)}">${statusLabel(i.status)}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Restaurar abertos
+  openCards.forEach(id => {
+    const el = document.getElementById('tema-'+id);
+    if(el) el.classList.add('open');
+  });
+}
+
+let openCards = new Set(['backend','ia1']);
+function toggleTema(id) {
+  const el = document.getElementById('tema-'+id);
+  el.classList.toggle('open');
+  if (el.classList.contains('open')) openCards.add(id); else openCards.delete(id);
+}
+
+// ══ KPIs + COMPLETUDE ══
+const TEMA_SHORT = {
+  'atusx':'ATUSX', 'backend':'Back-End', 'ia1':'Front-End IA',
+  'query':'Query', 'link':'Link FE', 'get':'GET',
+  'automacao':'Automação'
+};
+function kpiSub(temas, status) {
+  const hits = temas.filter(t => t.issues.some(i => i.status === status));
+  if (!hits.length) return '—';
+  if (hits.length <= 3) return hits.map(t => TEMA_SHORT[t.id] || t.id).join(' · ');
+  return hits.length + ' temas';
+}
+
+function renderKpisECompletude() {
+  const temas = getTemas();
+  const all = temas.flatMap(t => t.issues);
+  const total = all.length;
+  const counts = {};
+  let ws = 0;
+  all.forEach(i => {
+    counts[i.status] = (counts[i.status]||0)+1;
+    ws += (STATUS_WEIGHT[i.status]||0);
+  });
+  const pct = Math.round(ws/total);
+
+  const set = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+  set('kpi-concluido',    counts['Concluído']||0);
+  set('kpi-concluido-sub', kpiSub(temas,'Concluído'));
+  set('kpi-cr',            counts['Code Review Concluído']||0);
+  set('kpi-cr-sub',        kpiSub(temas,'Code Review Concluído'));
+  set('kpi-emteste',       counts['Em Teste']||0);
+  set('kpi-emteste-sub',   kpiSub(temas,'Em Teste'));
+  set('kpi-dev',           counts['Em Desenvolvimento']||0);
+  set('kpi-dev-sub',       kpiSub(temas,'Em Desenvolvimento'));
+  set('kpi-comp',          counts['Comprometido']||0);
+  set('kpi-comp-sub',      kpiSub(temas,'Comprometido'));
+  set('kpi-backlog',       counts['Backlog']||0);
+  set('kpi-backlog-sub',   kpiSub(temas,'Backlog'));
+  set('kpi-plan',          counts['Planejado']||0);
+  set('kpi-plan-sub',      kpiSub(temas,'Planejado'));
+  set('pct-geral',         pct+'%');
+  set('hdr-pct',           pct+'% concluído');
+
+  const segs = [
+    ['Concluído','bar-concluido'],
+    ['Code Review Concluído','bar-codereview'],
+    ['Em Teste','bar-emteste'],
+    ['Em Desenvolvimento','bar-emdesenv'],
+    ['Comprometido','bar-comprometido'],
+    ['Planejado','bar-planejado'],
+    ['Backlog','bar-backlog'],
+  ];
+  document.getElementById('bar-geral').innerHTML = segs.map(([s,cls]) => {
+    const n = counts[s]||0; if(!n) return '';
+    return `<div class="bar-seg ${cls}" style="width:${(n/total*100).toFixed(1)}%" title="${s}: ${n} (${((n/total)*100).toFixed(0)}%)"></div>`;
+  }).join('');
+}
+
+// ══ TABELA COMPLETA ══
+let currentFilter = 'todos';
+function applyFilters() {
+  const q = (document.getElementById('search-input').value||'').toLowerCase();
+  const temas = getTemas();
+  const rows = temas.flatMap(t => t.issues.map(i => ({
+    id: i.id, nome: i.nome, tema: t.nome, temaId: t.id,
+    status: i.status, impedimento: t.impedimento, novo: i.novo,
+  })));
+  const filtered = rows.filter(r => {
+    const mf = currentFilter==='todos' ||
+      r.tema.toLowerCase().includes(currentFilter.toLowerCase()) ||
+      r.temaId.toLowerCase().includes(currentFilter.toLowerCase());
+    const ms = !q || r.id.toLowerCase().includes(q) || r.nome.toLowerCase().includes(q) || r.tema.toLowerCase().includes(q);
+    return mf && ms;
+  });
+  document.getElementById('table-count').textContent = filtered.length+' issues';
+  document.getElementById('tbody').innerHTML = filtered.map(r => `
+    <tr>
+      <td><span style="font-family:monospace;font-size:11px;color:#475569;">${idLink(r.id)}</span></td>
+      <td><span class="entity-name">${r.nome}</span></td>
+      <td><span class="badge s-especial" style="font-size:10px;">${r.tema}</span></td>
+      <td><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></td>
+      <td style="font-size:11px;color:#64748b;">${r.impedimento}</td>
+    </tr>`).join('');
+}
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+// ══ MODAL SENHA ══
+function abrirPainel() {
+  // Mostra modal de senha antes de abrir o painel
+  document.getElementById('senhaInput').value = '';
+  document.getElementById('senhaErro').textContent = '';
+  document.getElementById('senhaInput').classList.remove('erro');
+  document.getElementById('senhaOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('senhaInput').focus(), 100);
+}
+function fecharSenha() {
+  document.getElementById('senhaOverlay').classList.remove('open');
+}
+function confirmarSenha() {
+  const input = document.getElementById('senhaInput').value;
+  if (btoa(input) === SENHA_OK) {
+    fecharSenha();
+    document.getElementById('overlay').classList.add('open');
+    document.getElementById('editPanel').classList.add('open');
+    renderEditList();
+  } else {
+    document.getElementById('senhaErro').textContent = 'Senha incorreta. Tente novamente.';
+    const inp = document.getElementById('senhaInput');
+    inp.classList.add('erro');
+    inp.value = '';
+    setTimeout(() => inp.classList.remove('erro'), 500);
+  }
+}
+
+// ══ PAINEL DE EDIÇÃO ══
+function fecharPainel() {
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('editPanel').classList.remove('open');
+}
+
+function renderEditList() {
+  const temas = TEMAS_BASE; // usa base para mostrar IDs/nomes originais
+  let html = '';
+  temas.forEach(t => {
+    html += `<div class="edit-group-header" data-tema="${t.id}">
+      <span>${t.icone}</span> ${t.nome} <span style="color:#94a3b8;font-weight:400;">(${t.issues.length})</span>
+    </div>`;
+    t.issues.forEach(i => {
+      const curStatus = getStatus(i.id, i.status);
+      const opts = STATUS_OPTIONS.map(s =>
+        `<option value="${s}" ${curStatus===s?'selected':''}>${s}</option>`
+      ).join('');
+      html += `
+      <div class="edit-issue-row" data-tema="${t.id}" data-id="${i.id}" data-nome="${i.nome.toLowerCase()}">
+        <span class="edit-id">${idLink(i.id)}</span>
+        <span class="edit-name">${i.nome}</span>
+        <select class="status-select ${statusClass(curStatus)}" data-issue-id="${i.id}"
+          onchange="onStatusChange(this,'${i.id}')">
+          ${opts}
+        </select>
+      </div>`;
+    });
+  });
+  document.getElementById('editList').innerHTML = html;
+}
+
+function onStatusChange(sel, issueId) {
+  const newStatus = sel.value;
+  OVERRIDES[issueId] = newStatus;
+  // Atualiza cor do select imediatamente
+  sel.className = 'status-select ' + statusClass(newStatus);
+}
+
+function filtrarEditar() {
+  const q   = (document.getElementById('edit-search').value||'').toLowerCase();
+  const tema = document.getElementById('edit-filter-tema').value;
+  const st   = document.getElementById('edit-filter-status').value;
+  document.querySelectorAll('.edit-issue-row').forEach(row => {
+    const rTema  = row.dataset.tema;
+    const rId    = row.dataset.id.toLowerCase();
+    const rNome  = row.dataset.nome;
+    const rSt    = row.querySelector('select').value;
+    const mTema  = !tema || rTema === tema;
+    const mQ     = !q || rId.includes(q) || rNome.includes(q);
+    const mSt    = !st || rSt === st;
+    row.classList.toggle('hidden', !(mTema && mQ && mSt));
+  });
+  // Oculta cabeçalhos de grupo se todos os filhos estiverem hidden
+  document.querySelectorAll('.edit-group-header').forEach(hdr => {
+    const temaId = hdr.dataset.tema;
+    const rows = document.querySelectorAll(`.edit-issue-row[data-tema="${temaId}"]`);
+    const algumVisivel = [...rows].some(r => !r.classList.contains('hidden'));
+    hdr.style.display = algumVisivel ? '' : 'none';
+  });
+}
+
+function salvarAlteracoes() {
+  fbShow('load', '💾 Salvando no Firebase...');
+  db.ref('status').set(OVERRIDES)
+    .then(() => {
+      fecharPainel();
+      fbShow('ok', '✓ Salvo e sincronizado!');
+    })
+    .catch(err => {
+      fbShow('err', '✗ Erro ao salvar: ' + err.message);
+    });
+}
+
+function resetarTudo() {
+  if (!confirm('Redefinir todos os status para os valores originais? Todos os visitantes verão os dados originais.')) return;
+  fbShow('load', '↩ Redefinindo...');
+  db.ref('status').set({})
+    .then(() => {
+      fecharPainel();
+      fbShow('ok', '✓ Status redefinidos!');
+    })
+    .catch(err => fbShow('err', '✗ Erro: ' + err.message));
+}
+
+function fbShow(tipo, msg) {
+  const el = document.getElementById('fbStatus');
+  el.textContent = msg;
+  el.className = 'fb-status show ' + tipo;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+// ══ INIT — render inicial com dados padrão, depois Firebase atualiza ══
+renderTemas();
+renderKpisECompletude();
+applyFilters();
+
+// Abre os temas por padrão
+['backend','ia1'].forEach(id => {
+  const el = document.getElementById('tema-'+id);
+  if(el) el.classList.add('open');
+});
+
+// Escuta mudanças no Firebase em tempo real
+fbShow('load', '🔄 Conectando ao Firebase...');
+db.ref('status').on('value', snapshot => {
+  OVERRIDES = snapshot.val() || {};
+  renderTemas();
+  renderKpisECompletude();
+  applyFilters();
+  fbShow('ok', '✓ Dados sincronizados');
+}, err => {
+  fbShow('err', '✗ Sem conexão com Firebase');
+});
+</script>
+
+</body>
+</html>
