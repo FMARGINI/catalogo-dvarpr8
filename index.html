@@ -516,6 +516,16 @@ td { padding: 9px 14px; vertical-align: middle; }
 .fb-status.ok   { color: #166534; border-left: 3px solid #22c55e; }
 .fb-status.err  { color: #991b1b; border-left: 3px solid #ef4444; }
 .fb-status.load { color: #1e40af; border-left: 3px solid #3b82f6; }
+
+/* ── FOLDER TABS ── */
+.tab-bar { background:#1e3a5f; display:flex; padding:0 40px; border-bottom:2px solid rgba(255,255,255,.1); }
+.tab-btn { padding:12px 24px; font-size:13px; font-weight:600; color:rgba(255,255,255,.65);
+  cursor:pointer; border:none; background:transparent; border-bottom:3px solid transparent;
+  margin-bottom:-2px; transition:all .15s; letter-spacing:.2px; }
+.tab-btn:hover { color:rgba(255,255,255,.9); }
+.tab-btn.active { color:white; border-bottom-color:#60a5fa; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
 </style>
 </head>
 <body>
@@ -600,6 +610,13 @@ td { padding: 9px 14px; vertical-align: middle; }
   </div>
 </div>
 
+<!-- ══ FOLDER TABS ══ -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('dvarpr8',this)">📦 DVARPR-8 — Catálogo de Produtos</button>
+  <button class="tab-btn"        onclick="switchTab('dvarpr1',this)">🔄 DVARPR-1 — Consulta e Transferência</button>
+</div>
+
+<div class="tab-panel active" id="panel-dvarpr8">
 <div class="main">
 
 <!-- ══ KPI CARDS ══ -->
@@ -823,6 +840,125 @@ td { padding: 9px 14px; vertical-align: middle; }
 </div>
 
 </div><!-- /main -->
+</div><!-- /panel-dvarpr8 -->
+
+<!-- ══ PANEL DVARPR-1 ══ -->
+<div class="tab-panel" id="panel-dvarpr1">
+<div class="main">
+
+<!-- KPI CARDS D1 -->
+<div class="kpi-row">
+  <div class="kpi-card c-concluido"><div class="num" id="kpi-d1-concluido">—</div><div class="lbl">Concluído</div><div class="sub" id="kpi-d1-concluido-sub"></div></div>
+  <div class="kpi-card c-em-desenvolvimento"><div class="num" id="kpi-d1-dev">—</div><div class="lbl">Em Desenvolvimento</div><div class="sub" id="kpi-d1-dev-sub"></div></div>
+  <div class="kpi-card c-comprometido"><div class="num" id="kpi-d1-comp">—</div><div class="lbl">Comprometido</div><div class="sub" id="kpi-d1-comp-sub"></div></div>
+  <div class="kpi-card c-backlog"><div class="num" id="kpi-d1-backlog">—</div><div class="lbl">Backlog</div><div class="sub" id="kpi-d1-backlog-sub"></div></div>
+  <div class="kpi-card c-total"><div class="num">5</div><div class="lbl">Total Issues</div><div class="sub">Jornada 11</div></div>
+</div>
+
+<!-- COMPLETUDE D1 -->
+<div class="completude-box">
+  <h3>📊 Completude — DVARPR-1 · Consulta e Transferência</h3>
+  <div style="display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;">
+    <div><div class="completude-pct" id="pct-d1">—</div><div class="completude-sub">do épico concluído (ponderado por esforço)</div></div>
+    <div style="flex:1;min-width:200px;">
+      <div class="bar-track" id="bar-d1"></div>
+      <div class="legend-row">
+        <div class="leg-item"><div class="leg-dot" style="background:#22c55e"></div>Concluído</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#3b82f6"></div>Em Desenvolvimento</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#f59e0b"></div>Comprometido</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#94a3b8"></div>Backlog</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PIPELINE D1 -->
+<div class="pipeline-box">
+  <h3>🔀 Pipeline DVARPR-1 — Sequência de Dependências</h3>
+  <div class="pipeline-v2" style="grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;">
+
+    <div class="pipeline-col">
+      <div class="pipeline-col-label">⚡ Fase 1 · Sem Impedimento</div>
+      <div class="pv2-block pv2-livre">
+        <div class="pv2-label">🗄️ Dicionário ATUSX</div>
+        <div class="pv2-name">Filiais Permitidas para Consulta de Estoque</div>
+        <div class="pv2-count"><a href="https://jiraproducao.totvs.com.br/browse/DVARPR-2" target="_blank">DVARPR-2</a></div>
+        <div class="pv2-badge">Livre para iniciar</div>
+      </div>
+    </div>
+
+    <div class="pipeline-connector"><div class="arr">⟹</div><div class="dep-note">Dicionário concluído</div></div>
+
+    <div class="pipeline-col">
+      <div class="pipeline-col-label">🔒 Fase 2 · Aguarda DVARPR-2</div>
+      <div class="pv2-block pv2-bloqueado">
+        <div class="pv2-label">🖥️ Interface MVC</div>
+        <div class="pv2-name">Cadastro de Filiais Permitidas</div>
+        <div class="pv2-count"><a href="https://jiraproducao.totvs.com.br/browse/DVARPR-378" target="_blank">DVARPR-378</a></div>
+        <div class="pv2-badge">Aguarda DVARPR-2</div>
+      </div>
+    </div>
+
+    <div class="pipeline-connector"><div class="arr">⟹</div><div class="dep-note">Interface concluída</div></div>
+
+    <div class="pipeline-col">
+      <div class="pipeline-col-label">🤝 Fase 3 · Agendas Técnicas</div>
+      <div class="pv2-block pv2-bloqueado" style="margin-bottom:8px;">
+        <div class="pv2-label">📋 Agenda PSH</div>
+        <div class="pv2-name">Alinhamento Contrato de API</div>
+        <div class="pv2-count"><a href="https://jiraproducao.totvs.com.br/browse/DVARPR-379" target="_blank">DVARPR-379</a></div>
+        <div class="pv2-badge">Aguarda DVARPR-378</div>
+      </div>
+      <div class="pv2-block pv2-bloqueado">
+        <div class="pv2-label">🏢 Agenda TOTVS Norte</div>
+        <div class="pv2-name">Repasse Escopo Jornada 11</div>
+        <div class="pv2-count"><a href="https://jiraproducao.totvs.com.br/browse/DVARPR-380" target="_blank">DVARPR-380</a></div>
+        <div class="pv2-badge">Aguarda DVARPR-378</div>
+      </div>
+    </div>
+
+    <div class="pipeline-connector"><div class="arr">⟹</div><div class="dep-note">Agendas concluídas</div></div>
+
+    <div class="pipeline-col">
+      <div class="pipeline-col-label">🏁 Fase 4 · Documentação Final</div>
+      <div class="pv2-block pv2-final">
+        <div class="pv2-label">📖 Documentação TDN</div>
+        <div class="pv2-name">Publicação TOTVS</div>
+        <div class="pv2-count"><a href="https://jiraproducao.totvs.com.br/browse/DVARPR-381" target="_blank">DVARPR-381</a></div>
+        <div class="pv2-badge">Aguarda fases 1–3</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TEMAS D1 -->
+<div class="section-title" style="margin-bottom:16px;">
+  📁 Issues por Tema <span>3 temas · 5 issues</span>
+</div>
+<div class="temas-grid" id="temas-grid-d1"></div>
+
+<!-- TABELA D1 -->
+<div class="section-title">
+  📋 Todas as Issues <span id="table-count-d1">5 issues</span>
+</div>
+<div class="table-wrap">
+  <div class="filter-bar">
+    <input type="text" id="search-input-d1" placeholder="🔍 Buscar por ID ou nome..." oninput="applyFiltersD1()">
+    <button class="filter-btn active" onclick="setFilterD1('todos',this)">Todos</button>
+    <button class="filter-btn" onclick="setFilterD1('modelagem',this)">Modelagem</button>
+    <button class="filter-btn" onclick="setFilterD1('interface',this)">Interface e Agendas</button>
+    <button class="filter-btn" onclick="setFilterD1('documentacao',this)">Documentação</button>
+  </div>
+  <table>
+    <thead><tr><th>ID</th><th>Nome</th><th>Tema</th><th>Status</th><th>Impedimento</th></tr></thead>
+    <tbody id="tbody-d1"></tbody>
+  </table>
+</div>
+
+</div><!-- /main d1 -->
+</div><!-- /panel-dvarpr1 -->
+
 <div class="footer">DVARPR-8 — Épico Catálogo de Produtos · ERP TOTVS Protheus · Visão Gerencial v2</div>
 
 <!-- ══════════════════════════════════════════════ -->
@@ -845,6 +981,35 @@ const STATUS_OPTIONS = [
   'Comprometido',
   'Backlog',
   'Planejado',
+];
+
+const TEMAS_BASE_D1 = [
+  {
+    id: 'modelagem', nome: 'Dicionário ATUSX', icone: '🗄️', iconeBg: '#e0e7ff',
+    descricao: 'Criação do dicionário de dados para Filiais Permitidas para Consulta de Estoque.',
+    impedimento: 'Nenhum — pode iniciar agora', impClass: 'dep-livre', fase: 'Fase 1',
+    issues: [
+      { id: 'DVARPR-2', nome: 'Criação do Cadastro (ATUSX) de Filiais Permitidas para Consulta de Estoque', status: 'Comprometido', novo: false },
+    ]
+  },
+  {
+    id: 'interface', nome: 'Interface e Alinhamentos', icone: '🔗', iconeBg: '#dbeafe',
+    descricao: 'Interface MVC do cadastro e agendas técnicas com PSH e TOTVS Norte.',
+    impedimento: 'Bloqueado por DVARPR-2', impClass: 'dep-bloqueado', fase: 'Fase 2–3',
+    issues: [
+      { id: 'DVARPR-378', nome: 'Criação da Interface MVC — Cadastro de Filiais Permitidas para Consulta de Estoque', status: 'Comprometido', novo: false },
+      { id: 'DVARPR-379', nome: 'Apoio para formalizar com time de Integração os dados filtrados de Lojas consultadas', status: 'Comprometido', novo: false },
+      { id: 'DVARPR-380', nome: 'Repasse de Escopo para TOTVS Norte — Jornada 11 (Transferência de Produtos entre Filiais)', status: 'Comprometido', novo: false },
+    ]
+  },
+  {
+    id: 'documentacao', nome: 'Documentação TDN', icone: '📖', iconeBg: '#d1fae5',
+    descricao: 'Documentação oficial no TDN da TOTVS.',
+    impedimento: 'Aguardando fases anteriores', impClass: 'dep-aguarda', fase: 'Fase 4',
+    issues: [
+      { id: 'DVARPR-381', nome: 'Transferência de Produtos entre Filiais — Documentação', status: 'Comprometido', novo: false },
+    ]
+  },
 ];
 
 const TEMAS_BASE = [
@@ -998,6 +1163,8 @@ const SENHA_OK = 'UGFsbWVpcmFz'; // btoa('Palmeiras')
 
 // ══ DADOS ATIVOS ══
 let OVERRIDES = {};
+let OVERRIDES_D1 = {};
+let activeEpico = 'dvarpr8';
 
 function getStatus(issueId, statusBase) {
   return OVERRIDES[issueId] !== undefined ? OVERRIDES[issueId] : statusBase;
@@ -1256,14 +1423,14 @@ function fecharPainel() {
 }
 
 function renderEditList() {
-  const temas = TEMAS_BASE; // usa base para mostrar IDs/nomes originais
+  const temas = activeEpico === 'dvarpr1' ? TEMAS_BASE_D1 : TEMAS_BASE; // usa base para mostrar IDs/nomes originais
   let html = '';
   temas.forEach(t => {
     html += `<div class="edit-group-header" data-tema="${t.id}">
       <span>${t.icone}</span> ${t.nome} <span style="color:#94a3b8;font-weight:400;">(${t.issues.length})</span>
     </div>`;
     t.issues.forEach(i => {
-      const curStatus = getStatus(i.id, i.status);
+      const curStatus = activeEpico === 'dvarpr1' ? getStatusD1(i.id, i.status) : getStatus(i.id, i.status);
       const opts = STATUS_OPTIONS.map(s =>
         `<option value="${s}" ${curStatus===s?'selected':''}>${s}</option>`
       ).join('');
@@ -1283,7 +1450,7 @@ function renderEditList() {
 
 function onStatusChange(sel, issueId) {
   const newStatus = sel.value;
-  OVERRIDES[issueId] = newStatus;
+  if (activeEpico === 'dvarpr1') OVERRIDES_D1[issueId] = newStatus; else OVERRIDES[issueId] = newStatus;
   // Atualiza cor do select imediatamente
   sel.className = 'status-select ' + statusClass(newStatus);
 }
@@ -1313,7 +1480,7 @@ function filtrarEditar() {
 
 function salvarAlteracoes() {
   fbShow('load', '💾 Salvando no Firebase...');
-  db.ref('status').set(OVERRIDES)
+  db.ref('status/' + activeEpico).set(activeEpico === 'dvarpr1' ? OVERRIDES_D1 : OVERRIDES)
     .then(() => {
       fecharPainel();
       fbShow('ok', '✓ Salvo e sincronizado!');
@@ -1326,7 +1493,7 @@ function salvarAlteracoes() {
 function resetarTudo() {
   if (!confirm('Redefinir todos os status para os valores originais? Todos os visitantes verão os dados originais.')) return;
   fbShow('load', '↩ Redefinindo...');
-  db.ref('status').set({})
+  db.ref('status/' + activeEpico).set({})
     .then(() => {
       fecharPainel();
       fbShow('ok', '✓ Status redefinidos!');
@@ -1342,6 +1509,130 @@ function fbShow(tipo, msg) {
   el._t = setTimeout(() => el.classList.remove('show'), 4000);
 }
 
+
+// ══ FOLDER SWITCH ══
+function switchTab(epico, btn) {
+  activeEpico = epico;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + epico).classList.add('active');
+  if (epico === 'dvarpr1') {
+    document.querySelector('.header-left h1').textContent = '🔄 DVARPR-1 — Consulta e Transferência';
+    document.querySelector('.header-left p').textContent = 'Visão Gerencial · Jornada 11 · Transferência entre Filiais';
+    renderTemasD1(); renderKpisD1(); applyFiltersD1();
+  } else {
+    document.querySelector('.header-left h1').textContent = '🗂 DVARPR-8 — Catálogo de Produtos';
+    document.querySelector('.header-left p').textContent = 'Visão Gerencial por Temas · Épico Back-End + Automação';
+    renderTemas(); renderKpisECompletude(); applyFilters();
+  }
+}
+
+// ══ D1: utilitários ══
+function getStatusD1(id, base) { return OVERRIDES_D1[id] !== undefined ? OVERRIDES_D1[id] : base; }
+function getTemasD1() {
+  return TEMAS_BASE_D1.map(t => ({ ...t, issues: t.issues.map(i => ({ ...i, status: getStatusD1(i.id, i.status) })) }));
+}
+
+// ══ D1: render temas ══
+let openCardsD1 = new Set(['interface']);
+function renderTemasD1() {
+  const temas = getTemasD1();
+  document.getElementById('temas-grid-d1').innerHTML = temas.map(t => {
+    const prog = calcProgress(t.issues);
+    return `
+    <div class="tema-card" id="tema-d1-${t.id}">
+      <div class="tema-header" onclick="toggleTemaD1('${t.id}')">
+        <div class="tema-header-left">
+          <div class="tema-icon" style="background:${t.iconeBg}">${t.icone}</div>
+          <div><div class="tema-title">${t.nome}</div><div class="tema-subtitle">${t.fase}</div></div>
+        </div>
+        <div class="tema-header-right">
+          <div class="tema-count">${t.issues.length}</div>
+          <div class="tema-count-lbl">issues</div>
+          <div class="chevron">▼</div>
+        </div>
+      </div>
+      <div class="tema-body">
+        <div class="tema-meta">
+          <span class="dep-badge ${t.impClass}">🔒 ${t.impedimento}</span>
+          <span style="font-size:11px;color:#64748b;">${t.descricao}</span>
+        </div>
+        <div class="tema-progress">
+          <div class="tema-progress-label"><span>Progresso (esforço ponderado)</span><span class="tema-progress-pct">${prog.pct}%</span></div>
+          <div class="bar-track">${progressBarHtml(t.issues)}</div>
+        </div>
+        <div class="tema-issues">
+          ${t.issues.map(i => `<div class="issue-row">
+            <span class="issue-id">${idLink(i.id)}</span>
+            <span class="issue-name">${i.nome}</span>
+            <span class="badge ${statusClass(i.status)}">${statusLabel(i.status)}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  openCardsD1.forEach(id => { const el = document.getElementById('tema-d1-' + id); if (el) el.classList.add('open'); });
+}
+function toggleTemaD1(id) {
+  const el = document.getElementById('tema-d1-' + id);
+  el.classList.toggle('open');
+  if (el.classList.contains('open')) openCardsD1.add(id); else openCardsD1.delete(id);
+}
+
+// ══ D1: KPIs + completude ══
+function renderKpisD1() {
+  const temas = getTemasD1();
+  const all = temas.flatMap(t => t.issues);
+  const total = all.length;
+  const counts = {};
+  let ws = 0;
+  all.forEach(i => { counts[i.status] = (counts[i.status] || 0) + 1; ws += (STATUS_WEIGHT[i.status] || 0); });
+  const pct = total ? Math.round(ws / total) : 0;
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  set('kpi-d1-concluido', counts['Concluído'] || 0);
+  set('kpi-d1-dev',       counts['Em Desenvolvimento'] || 0);
+  set('kpi-d1-comp',      counts['Comprometido'] || 0);
+  set('kpi-d1-backlog',   counts['Backlog'] || 0);
+  set('pct-d1',           pct + '%');
+  set('hdr-pct',          pct + '% concluído');
+  const segs = [['Concluído','bar-concluido'],['Em Desenvolvimento','bar-emdesenv'],['Comprometido','bar-comprometido'],['Planejado','bar-planejado'],['Backlog','bar-backlog']];
+  document.getElementById('bar-d1').innerHTML = segs.map(([s, cls]) => {
+    const n = counts[s] || 0; if (!n) return '';
+    return `<div class="bar-seg ${cls}" style="width:${(n/total*100).toFixed(1)}%" title="${s}: ${n}"></div>`;
+  }).join('');
+}
+
+// ══ D1: tabela completa ══
+let currentFilterD1 = 'todos';
+function applyFiltersD1() {
+  const q = (document.getElementById('search-input-d1').value || '').toLowerCase();
+  const temas = getTemasD1();
+  const rows = temas.flatMap(t => t.issues.map(i => ({
+    id: i.id, nome: i.nome, tema: t.nome, temaId: t.id, status: i.status, impedimento: t.impedimento
+  })));
+  const filtered = rows.filter(r => {
+    const mf = currentFilterD1 === 'todos' || r.temaId === currentFilterD1;
+    const ms = !q || r.id.toLowerCase().includes(q) || r.nome.toLowerCase().includes(q);
+    return mf && ms;
+  });
+  document.getElementById('table-count-d1').textContent = filtered.length + ' issues';
+  document.getElementById('tbody-d1').innerHTML = filtered.map(r => `
+    <tr>
+      <td><span style="font-family:monospace;font-size:11px;color:#475569;">${idLink(r.id)}</span></td>
+      <td><span class="entity-name">${r.nome}</span></td>
+      <td><span class="badge s-especial" style="font-size:10px;">${r.tema}</span></td>
+      <td><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></td>
+      <td style="font-size:11px;color:#64748b;">${r.impedimento}</td>
+    </tr>`).join('');
+}
+function setFilterD1(f, btn) {
+  currentFilterD1 = f;
+  document.querySelectorAll('#panel-dvarpr1 .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFiltersD1();
+}
+
 // ══ INIT — render inicial com dados padrão, depois Firebase atualiza ══
 renderTemas();
 renderKpisECompletude();
@@ -1355,15 +1646,16 @@ applyFilters();
 
 // Escuta mudanças no Firebase em tempo real
 fbShow('load', '🔄 Conectando ao Firebase...');
-db.ref('status').on('value', snapshot => {
+db.ref('status/dvarpr8').on('value', snapshot => {
   OVERRIDES = snapshot.val() || {};
-  renderTemas();
-  renderKpisECompletude();
-  applyFilters();
+  if (activeEpico === 'dvarpr8') { renderTemas(); renderKpisECompletude(); applyFilters(); }
   fbShow('ok', '✓ Dados sincronizados');
-}, err => {
-  fbShow('err', '✗ Sem conexão com Firebase');
-});
+}, err => { fbShow('err', '✗ Sem conexão com Firebase'); });
+
+db.ref('status/dvarpr1').on('value', snapshot => {
+  OVERRIDES_D1 = snapshot.val() || {};
+  if (activeEpico === 'dvarpr1') { renderTemasD1(); renderKpisD1(); applyFiltersD1(); }
+}, err => {});
 </script>
 
 </body>
