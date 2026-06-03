@@ -651,11 +651,7 @@ td { padding: 9px 14px; vertical-align: middle; }
     <div class="lbl">Backlog</div>
     <div class="sub" id="kpi-backlog-sub"></div>
   </div>
-  <div class="kpi-card c-planejado">
-    <div class="num" id="kpi-plan">—</div>
-    <div class="lbl">Planejado</div>
-    <div class="sub" id="kpi-plan-sub"></div>
-  </div>
+
   <div class="kpi-card c-total">
     <div class="num">84</div>
     <div class="lbl">Total Issues</div>
@@ -680,7 +676,6 @@ td { padding: 9px 14px; vertical-align: middle; }
         <div class="leg-item"><div class="leg-dot" style="background:#3b82f6"></div>Em Desenvolvimento</div>
         <div class="leg-item"><div class="leg-dot" style="background:#f59e0b"></div>Comprometido</div>
         <div class="leg-item"><div class="leg-dot" style="background:#94a3b8"></div>Backlog</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#a78bfa"></div>Planejado</div>
       </div>
     </div>
   </div>
@@ -849,8 +844,10 @@ td { padding: 9px 14px; vertical-align: middle; }
 <!-- KPI CARDS D1 -->
 <div class="kpi-row">
   <div class="kpi-card c-concluido"><div class="num" id="kpi-d1-concluido">—</div><div class="lbl">Concluído</div><div class="sub" id="kpi-d1-concluido-sub"></div></div>
+  <div class="kpi-card c-code-review"><div class="num" id="kpi-d1-cr">—</div><div class="lbl">Code Review</div><div class="sub" id="kpi-d1-cr-sub"></div></div>
   <div class="kpi-card c-em-desenvolvimento"><div class="num" id="kpi-d1-dev">—</div><div class="lbl">Em Desenvolvimento</div><div class="sub" id="kpi-d1-dev-sub"></div></div>
   <div class="kpi-card c-comprometido"><div class="num" id="kpi-d1-comp">—</div><div class="lbl">Comprometido</div><div class="sub" id="kpi-d1-comp-sub"></div></div>
+  <div class="kpi-card c-em-teste"><div class="num" id="kpi-d1-emteste">—</div><div class="lbl">Em Teste</div><div class="sub" id="kpi-d1-emteste-sub"></div></div>
   <div class="kpi-card c-backlog"><div class="num" id="kpi-d1-backlog">—</div><div class="lbl">Backlog</div><div class="sub" id="kpi-d1-backlog-sub"></div></div>
   <div class="kpi-card c-total"><div class="num">5</div><div class="lbl">Total Issues</div><div class="sub">Jornada 11</div></div>
 </div>
@@ -1338,8 +1335,7 @@ function renderKpisECompletude() {
   set('kpi-comp-sub',      kpiSub(temas,'Comprometido'));
   set('kpi-backlog',       counts['Backlog']||0);
   set('kpi-backlog-sub',   kpiSub(temas,'Backlog'));
-  set('kpi-plan',          counts['Planejado']||0);
-  set('kpi-plan-sub',      kpiSub(temas,'Planejado'));
+
   set('pct-geral',         pct+'%');
   set('hdr-pct',           pct+'% concluído');
 
@@ -1598,12 +1594,14 @@ function renderKpisD1() {
   const pct = total ? Math.round(ws / total) : 0;
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
   set('kpi-d1-concluido', counts['Concluído'] || 0);
+  set('kpi-d1-cr',        counts['Code Review Concluído'] || 0);
   set('kpi-d1-dev',       counts['Em Desenvolvimento'] || 0);
   set('kpi-d1-comp',      counts['Comprometido'] || 0);
+  set('kpi-d1-emteste',   counts['Em Teste'] || 0);
   set('kpi-d1-backlog',   counts['Backlog'] || 0);
   set('pct-d1',           pct + '%');
   set('hdr-pct',          pct + '% concluído');
-  const segs = [['Concluído','bar-concluido'],['Em Desenvolvimento','bar-emdesenv'],['Comprometido','bar-comprometido'],['Planejado','bar-planejado'],['Backlog','bar-backlog']];
+  const segs = [['Concluído','bar-concluido'],['Code Review Concluído','bar-codereview'],['Em Teste','bar-emteste'],['Em Desenvolvimento','bar-emdesenv'],['Comprometido','bar-comprometido'],['Backlog','bar-backlog']];
   document.getElementById('bar-d1').innerHTML = segs.map(([s, cls]) => {
     const n = counts[s] || 0; if (!n) return '';
     return `<div class="bar-seg ${cls}" style="width:${(n/total*100).toFixed(1)}%" title="${s}: ${n}"></div>`;
