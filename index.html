@@ -603,8 +603,8 @@ td { padding: 9px 14px; vertical-align: middle; }
     <p>Visão Gerencial por Temas · Épico Back-End + Automação</p>
   </div>
   <div class="header-right">
-    <div class="header-badge">81 Issues</div>
-    <div class="header-badge">7 Temas</div>
+    <div class="header-badge" id="hdr-issues">81 Issues</div>
+    <div class="header-badge" id="hdr-temas">7 Temas</div>
     <div class="header-badge" id="hdr-pct">Calculando...</div>
     <button class="btn-edit" onclick="abrirPainel()">✏️ Atualizar Status</button>
   </div>
@@ -1520,10 +1520,14 @@ function switchTab(epico, btn) {
   if (epico === 'dvarpr1') {
     document.querySelector('.header-left h1').textContent = '🔄 DVARPR-1 — Consulta e Transferência';
     document.querySelector('.header-left p').textContent = 'Visão Gerencial · Jornada 11 · Transferência entre Filiais';
+    document.getElementById('hdr-issues').textContent = '5 Issues';
+    document.getElementById('hdr-temas').textContent = '3 Temas';
     renderTemasD1(); renderKpisD1(); applyFiltersD1();
   } else {
     document.querySelector('.header-left h1').textContent = '🗂 DVARPR-8 — Catálogo de Produtos';
     document.querySelector('.header-left p').textContent = 'Visão Gerencial por Temas · Épico Back-End + Automação';
+    document.getElementById('hdr-issues').textContent = '81 Issues';
+    document.getElementById('hdr-temas').textContent = '7 Temas';
     renderTemas(); renderKpisECompletude(); applyFilters();
   }
 }
