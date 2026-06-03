@@ -63,7 +63,7 @@ STATUS_MAP = {
     'in test':                'Em Teste',
     'testing':                'Em Teste',
     'em desenvolvimento':     'Em Desenvolvimento',
-    'em andamento':           'Em Desenvolvimento'
+    'em andamento':           'Em Desenvolvimento',
     'in progress':            'Em Desenvolvimento',
     'in development':         'Em Desenvolvimento',
     'comprometido':           'Comprometido',
