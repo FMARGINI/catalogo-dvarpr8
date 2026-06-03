@@ -526,6 +526,13 @@ td { padding: 9px 14px; vertical-align: middle; }
 .tab-btn.active { color:white; border-bottom-color:#60a5fa; }
 .tab-panel { display:none; }
 .tab-panel.active { display:block; }
+
+/* ── SPRINT BADGE ── */
+.sprint-badge {
+  display: inline-block; font-size: 10px; font-weight: 600;
+  background: #ede9fe; color: #5b21b6;
+  border-radius: 10px; padding: 2px 8px; white-space: nowrap;
+}
 </style>
 </head>
 <body>
@@ -827,6 +834,7 @@ td { padding: 9px 14px; vertical-align: middle; }
         <th>Nome</th>
         <th>Tema</th>
         <th>Status</th>
+        <th>Sprint</th>
         <th>Impedimento</th>
       </tr>
     </thead>
@@ -948,7 +956,7 @@ td { padding: 9px 14px; vertical-align: middle; }
     <button class="filter-btn" onclick="setFilterD1('documentacao',this)">Documentação</button>
   </div>
   <table>
-    <thead><tr><th>ID</th><th>Nome</th><th>Tema</th><th>Status</th><th>Impedimento</th></tr></thead>
+    <thead><tr><th>ID</th><th>Nome</th><th>Tema</th><th>Status</th><th>Sprint</th><th>Impedimento</th></tr></thead>
     <tbody id="tbody-d1"></tbody>
   </table>
 </div>
@@ -1164,6 +1172,8 @@ const SENHA_OK = 'UGFsbWVpcmFz'; // btoa('Palmeiras')
 // ══ DADOS ATIVOS ══
 let OVERRIDES = {};
 let OVERRIDES_D1 = {};
+let SPRINTS_D8 = {};
+let SPRINTS_D1 = {};
 let activeEpico = 'dvarpr8';
 
 function getStatus(issueId, statusBase) {
@@ -1377,6 +1387,7 @@ function applyFilters() {
       <td><span class="entity-name">${r.nome}</span></td>
       <td><span class="badge s-especial" style="font-size:10px;">${r.tema}</span></td>
       <td><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></td>
+      <td>${SPRINTS_D8[r.id] ? `<span class="sprint-badge">${SPRINTS_D8[r.id]}</span>` : '<span style="color:#cbd5e1;font-size:11px;">—</span>'}</td>
       <td style="font-size:11px;color:#64748b;">${r.impedimento}</td>
     </tr>`).join('');
 }
@@ -1628,6 +1639,7 @@ function applyFiltersD1() {
       <td><span class="entity-name">${r.nome}</span></td>
       <td><span class="badge s-especial" style="font-size:10px;">${r.tema}</span></td>
       <td><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></td>
+      <td>${SPRINTS_D1[r.id] ? `<span class="sprint-badge">${SPRINTS_D1[r.id]}</span>` : '<span style="color:#cbd5e1;font-size:11px;">—</span>'}</td>
       <td style="font-size:11px;color:#64748b;">${r.impedimento}</td>
     </tr>`).join('');
 }
@@ -1660,6 +1672,16 @@ db.ref('status/dvarpr8').on('value', snapshot => {
 db.ref('status/dvarpr1').on('value', snapshot => {
   OVERRIDES_D1 = snapshot.val() || {};
   if (activeEpico === 'dvarpr1') { renderTemasD1(); renderKpisD1(); applyFiltersD1(); }
+}, err => {});
+
+db.ref('sprints/dvarpr8').on('value', snapshot => {
+  SPRINTS_D8 = snapshot.val() || {};
+  if (activeEpico === 'dvarpr8') applyFilters();
+}, err => {});
+
+db.ref('sprints/dvarpr1').on('value', snapshot => {
+  SPRINTS_D1 = snapshot.val() || {};
+  if (activeEpico === 'dvarpr1') applyFiltersD1();
 }, err => {});
 </script>
 
