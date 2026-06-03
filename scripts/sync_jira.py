@@ -9,15 +9,39 @@ import json
 import time
 import urllib.request
 import urllib.error
-import base64
+import urllib.parse
 
 # ── Configuração ──────────────────────────────────────────────────────────────
 JIRA_BASE    = 'https://jiraproducao.totvs.com.br/rest/api/2/issue'
+JIRA_LOGIN   = 'https://jiraproducao.totvs.com.br/rest/auth/1/session'
 FIREBASE_URL = 'https://catalogodvarpr-default-rtdb.firebaseio.com'
 
 JIRA_USER = os.environ['JIRA_USER']
 JIRA_PASS = os.environ['JIRA_PASS']
-AUTH      = base64.b64encode(f'{JIRA_USER}:{JIRA_PASS}'.encode()).decode()
+
+# ── Login via sessão (cookie) ─────────────────────────────────────────────────
+def get_session_cookie():
+    payload = json.dumps({'username': JIRA_USER, 'password': JIRA_PASS}).encode('utf-8')
+    req = urllib.request.Request(JIRA_LOGIN, data=payload, method='POST', headers={
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+    })
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read())
+            name  = data['session']['name']
+            value = data['session']['value']
+            print(f'✓ Login JIRA bem-sucedido (sessão obtida)')
+            return f'{name}={value}'
+    except urllib.error.HTTPError as e:
+        body = e.read().decode('utf-8', errors='ignore')
+        print(f'✗ Falha no login JIRA: HTTP {e.code} — {body[:200]}')
+        raise
+    except Exception as e:
+        print(f'✗ Falha no login JIRA: {e}')
+        raise
+
+SESSION_COOKIE = get_session_cookie()
 
 # ── Issues por épico ──────────────────────────────────────────────────────────
 ISSUES_D8 = [
@@ -81,7 +105,7 @@ def fetch_status(issue_id):
     """Busca o status atual de uma issue no JIRA. Retorna None em caso de erro."""
     url = f'{JIRA_BASE}/{issue_id}?fields=status'
     req = urllib.request.Request(url, headers={
-        'Authorization': f'Basic {AUTH}',
+        'Cookie': SESSION_COOKIE,
         'Accept': 'application/json',
     })
     try:
