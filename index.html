@@ -977,7 +977,7 @@ td { padding: 9px 14px; vertical-align: middle; }
   <div class="kpi-card c-comprometido"><div class="num" id="kpi-d553-comp">—</div><div class="lbl">Comprometido</div><div class="sub" id="kpi-d553-comp-sub"></div></div>
   <div class="kpi-card c-em-teste"><div class="num" id="kpi-d553-emteste">—</div><div class="lbl">Em Teste</div><div class="sub" id="kpi-d553-emteste-sub"></div></div>
   <div class="kpi-card c-backlog"><div class="num" id="kpi-d553-backlog">—</div><div class="lbl">Backlog</div><div class="sub" id="kpi-d553-backlog-sub"></div></div>
-  <div class="kpi-card c-total"><div class="num">5</div><div class="lbl">Total Issues</div><div class="sub">Jornada Sucata</div></div>
+  <div class="kpi-card c-total"><div class="num">6</div><div class="lbl">Total Issues</div><div class="sub">Jornada Sucata</div></div>
 </div>
 
 <!-- COMPLETUDE D553 -->
@@ -1034,11 +1034,17 @@ td { padding: 9px 14px; vertical-align: middle; }
 
     <div class="pipeline-col">
       <div class="pipeline-col-label">🔒 Fase 3 · Aguarda Fase 2</div>
-      <div class="pv2-block pv2-bloqueado">
+      <div class="pv2-block pv2-bloqueado" style="margin-bottom:8px;">
         <div class="pv2-label">⚙️ Processamento</div>
         <div class="pv2-name">Confirmação: NF Entrada, NCC e SE2</div>
         <div class="pv2-count"><a href="https://jiraproducao.totvs.com.br/browse/DVARPR-718" target="_blank">DVARPR-718</a></div>
         <div class="pv2-badge">Aguarda DVARPR-714 + 717</div>
+      </div>
+      <div class="pv2-block pv2-bloqueado">
+        <div class="pv2-label">📊 Relatório Smartview</div>
+        <div class="pv2-name">Gerencial de Entrada de Sucata</div>
+        <div class="pv2-count"><a href="https://jiraproducao.totvs.com.br/browse/DVARPR-721" target="_blank">DVARPR-721</a></div>
+        <div class="pv2-badge">Aguarda DVARPR-713 + 718</div>
       </div>
     </div>
 
@@ -1059,13 +1065,13 @@ td { padding: 9px 14px; vertical-align: middle; }
 
 <!-- TEMAS D553 -->
 <div class="section-title" style="margin-bottom:16px;">
-  📁 Issues por Tema <span>4 temas · 5 issues</span>
+  📁 Issues por Tema <span>5 temas · 6 issues</span>
 </div>
 <div class="temas-grid" id="temas-grid-d553"></div>
 
 <!-- TABELA D553 -->
 <div class="section-title">
-  📋 Todas as Issues <span id="table-count-d553">5 issues</span>
+  📋 Todas as Issues <span id="table-count-d553">6 issues</span>
 </div>
 <div class="table-wrap">
   <div class="filter-bar">
@@ -1075,6 +1081,7 @@ td { padding: 9px 14px; vertical-align: middle; }
     <button class="filter-btn" onclick="setFilterD553('interface',this)">Interface e Cadastros</button>
     <button class="filter-btn" onclick="setFilterD553('processamento',this)">Processamento</button>
     <button class="filter-btn" onclick="setFilterD553('documentacao',this)">Documentação</button>
+    <button class="filter-btn" onclick="setFilterD553('relatorio',this)">Relatório</button>
   </div>
   <table>
     <thead><tr><th>ID</th><th>Nome</th><th>Tema</th><th>Status</th><th>Sprint</th><th>Impedimento</th></tr></thead>
@@ -1170,6 +1177,14 @@ const TEMAS_BASE_D553 = [
     impedimento: 'Aguardando fases anteriores', impClass: 'dep-aguarda', fase: 'Fase 4',
     issues: [
       { id: 'DVARPR-720', nome: 'Documentar Processo de Entrada de Sucata no TDN', status: 'Comprometido', novo: true },
+    ]
+  },
+  {
+    id: 'relatorio', nome: 'Relatório Smartview', icone: '📊', iconeBg: '#fce7f3',
+    descricao: 'Relatório gerencial de entrada de sucata no Smartview, baseado nas tabelas de Cabeçalho e Itens (DVARPR-713).',
+    impedimento: 'Bloqueado por DVARPR-713 + 718', impClass: 'dep-bloqueado', fase: 'Fase 3',
+    issues: [
+      { id: 'DVARPR-721', nome: 'Criar Relatório Gerencial de Entrada de Sucata no Smartview', status: 'Comprometido', novo: true },
     ]
   },
 ];
@@ -1690,8 +1705,8 @@ function switchTab(epico, btn) {
   if (epico === 'dvarpr553') {
     document.querySelector('.header-left h1').textContent = '♻️ DVARPR-553 — Entrada de Sucata';
     document.querySelector('.header-left p').textContent = 'Visão Gerencial · Jornada Sucata · Logística Reversa de Baterias';
-    document.getElementById('hdr-issues').textContent = '5 Issues';
-    document.getElementById('hdr-temas').textContent = '4 Temas';
+    document.getElementById('hdr-issues').textContent = '6 Issues';
+    document.getElementById('hdr-temas').textContent = '5 Temas';
     renderTemasD553(); renderKpisD553(); applyFiltersD553();
   } else if (epico === 'dvarpr1') {
     document.querySelector('.header-left h1').textContent = '🔄 DVARPR-1 — Consulta e Transferência';
