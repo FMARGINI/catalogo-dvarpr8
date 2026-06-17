@@ -625,6 +625,7 @@ td { padding: 9px 14px; vertical-align: middle; }
   <button class="tab-btn"        onclick="switchTab('dvarpr111',this)">🧾 DVARPR-111 — Faturamento NF-e</button>
   <button class="tab-btn"        onclick="switchTab('dvarpr7',this)">💳 DVARPR-7 — Baixa de Títulos</button>
   <button class="tab-btn"        onclick="switchTab('dvarpr4',this)">👤 DVARPR-4 — Cadastro de Cliente</button>
+  <button class="tab-btn"        onclick="switchTab('dvarpr6',this)">💰 DVARPR-6 — Forma de Pagamento</button>
 </div>
 
 <div class="tab-panel active" id="panel-dvarpr8">
@@ -1359,6 +1360,101 @@ td { padding: 9px 14px; vertical-align: middle; }
 </div><!-- /main d4 -->
 </div><!-- /panel-dvarpr4 -->
 
+<!-- ══ PANEL DVARPR-6 ══ -->
+<div class="tab-panel" id="panel-dvarpr6">
+<div class="main">
+
+<!-- KPI CARDS D6 -->
+<div class="kpi-row">
+  <div class="kpi-card c-concluido"><div class="num" id="kpi-d6-concluido">—</div><div class="lbl">Concluído</div><div class="sub" id="kpi-d6-concluido-sub"></div></div>
+  <div class="kpi-card c-code-review"><div class="num" id="kpi-d6-cr">—</div><div class="lbl">Code Review</div><div class="sub" id="kpi-d6-cr-sub"></div></div>
+  <div class="kpi-card c-em-desenvolvimento"><div class="num" id="kpi-d6-dev">—</div><div class="lbl">Em Desenvolvimento</div><div class="sub" id="kpi-d6-dev-sub"></div></div>
+  <div class="kpi-card c-comprometido"><div class="num" id="kpi-d6-comp">—</div><div class="lbl">Comprometido</div><div class="sub" id="kpi-d6-comp-sub"></div></div>
+  <div class="kpi-card c-em-teste"><div class="num" id="kpi-d6-emteste">—</div><div class="lbl">Em Teste</div><div class="sub" id="kpi-d6-emteste-sub"></div></div>
+  <div class="kpi-card c-backlog"><div class="num" id="kpi-d6-backlog">—</div><div class="lbl">Backlog</div><div class="sub" id="kpi-d6-backlog-sub"></div></div>
+  <div class="kpi-card c-total"><div class="num">3</div><div class="lbl">Total Issues</div><div class="sub">Forma de Pagamento</div></div>
+</div>
+
+<!-- COMPLETUDE D6 -->
+<div class="completude-box">
+  <h3>📊 Completude — DVARPR-6 · Crediário: Forma de Pagamento com Limite de Crédito</h3>
+  <div style="display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;">
+    <div><div class="completude-pct" id="pct-d6">—</div><div class="completude-sub">do épico concluído (ponderado por esforço)</div></div>
+    <div style="flex:1;min-width:200px;">
+      <div class="bar-track" id="bar-d6"></div>
+      <div class="legend-row">
+        <div class="leg-item"><div class="leg-dot" style="background:#22c55e"></div>Concluído</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#f59e0b"></div>Comprometido</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#3b82f6"></div>Em Desenvolvimento</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#94a3b8"></div>Backlog</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PIPELINE D6 -->
+<div class="pipeline-box">
+  <h3>🔀 Pipeline DVARPR-6 — Sequência de Dependências</h3>
+  <div class="pipeline-v2" style="grid-template-columns:repeat(3,1fr);">
+
+    <div class="pipeline-col">
+      <div class="pipeline-col-label">⏳ Fase 1 · Dicionário</div>
+      <div class="pv2-block pv2-livre">
+        <div class="pv2-label">🗄️ Estrutura de Dados</div>
+        <div class="pv2-name">Criar Tabela de Configuração de Limite de Crédito por Forma de Pagamento</div>
+        <div class="pv2-count"><a href="https://jiraproducao.totvs.com.br/browse/DVARPR-729" target="_blank">DVARPR-729</a></div>
+        <div class="pv2-badge">⏳ Backlog</div>
+      </div>
+    </div>
+
+    <div class="pipeline-col">
+      <div class="pipeline-col-label">⏳ Fase 2 · Interface</div>
+      <div class="pv2-block pv2-livre">
+        <div class="pv2-label">🖥️ MVC</div>
+        <div class="pv2-name">Criar Interface MVC para Manutenção de Limite de Crédito por Forma de Pagamento</div>
+        <div class="pv2-count"><a href="https://jiraproducao.totvs.com.br/browse/DVARPR-730" target="_blank">DVARPR-730</a></div>
+        <div class="pv2-badge">⏳ Backlog</div>
+      </div>
+    </div>
+
+    <div class="pipeline-col">
+      <div class="pipeline-col-label">⏳ Fase 3 · Integração PSH</div>
+      <div class="pv2-block pv2-livre">
+        <div class="pv2-label">🔗 PSH → CH</div>
+        <div class="pv2-name">Incluir Campo utilizaLimiteCredito no Payload PSH de Descida de Formas de Pagamento</div>
+        <div class="pv2-count"><a href="https://jiraproducao.totvs.com.br/browse/DVARPR-731" target="_blank">DVARPR-731</a></div>
+        <div class="pv2-badge">⏳ Backlog</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TEMAS D6 -->
+<div class="section-title" style="margin-bottom:16px;">
+  📁 Issues por Tema <span>1 tema · 3 issues</span>
+</div>
+<div class="temas-grid" id="temas-grid-d6"></div>
+
+<!-- TABELA D6 -->
+<div class="section-title">
+  📋 Todas as Issues <span id="table-count-d6">3 issues</span>
+</div>
+<div class="table-wrap">
+  <div class="filter-bar">
+    <input type="text" id="search-input-d6" placeholder="🔍 Buscar por ID ou nome..." oninput="applyFiltersD6()">
+    <button class="filter-btn active" onclick="setFilterD6('todos',this)">Todos</button>
+    <button class="filter-btn" onclick="setFilterD6('config',this)">Configuração</button>
+  </div>
+  <table>
+    <thead><tr><th>ID</th><th>Nome</th><th>Tema</th><th>Status</th><th>Sprint</th><th>Impedimento</th></tr></thead>
+    <tbody id="tbody-d6"></tbody>
+  </table>
+</div>
+
+</div><!-- /main d6 -->
+</div><!-- /panel-dvarpr6 -->
+
 <div class="footer">DVARPR-8 — Épico Catálogo de Produtos · ERP TOTVS Protheus · Visão Gerencial v2 &nbsp;|&nbsp; 🔄 Última sincronização: <span id="last-sync">—</span></div>
 
 <!-- ══════════════════════════════════════════════ -->
@@ -1490,6 +1586,19 @@ const TEMAS_BASE_D4 = [
     impedimento: 'Nenhum — Concluído', impClass: 'dep-livre', fase: 'Fase 1',
     issues: [
       { id: 'DVARPV-5622', nome: 'Adicionar Campos de Bloqueio de Venda e Análise de Crédito na Tabela AI0 do Protheus', status: 'Concluído' },
+    ]
+  },
+];
+
+const TEMAS_BASE_D6 = [
+  {
+    id: 'config', nome: 'Configuração de Limite de Crédito por Forma de Pagamento', icone: '⚙️', iconeBg: '#fef3c7',
+    descricao: 'Criação da tabela auxiliar no dicionário do Protheus (complemento da SX5/24), interface MVC para configuração por forma de pagamento e inclusão do campo utilizaLimiteCredito no payload PSH de descida ao Commerce Hub (contrato 9.0.1).',
+    impedimento: 'Aguardando definição do nome da tabela pela engenharia Protheus', impClass: 'dep-livre', fase: 'Fase 1',
+    issues: [
+      { id: 'DVARPR-729', nome: 'Criar Tabela de Configuração de Limite de Crédito por Forma de Pagamento', status: 'Backlog' },
+      { id: 'DVARPR-730', nome: 'Criar Interface MVC para Manutenção de Limite de Crédito por Forma de Pagamento', status: 'Backlog' },
+      { id: 'DVARPR-731', nome: 'Incluir Campo utilizaLimiteCredito no Payload PSH de Descida de Formas de Pagamento', status: 'Backlog' },
     ]
   },
 ];
@@ -1673,7 +1782,9 @@ let OVERRIDES_D553 = {};
 let OVERRIDES_D7 = {};
 let OVERRIDES_D4 = {};
 let OVERRIDES_D111 = {};
+let OVERRIDES_D6 = {};
 let SPRINTS_D8 = {};
+let SPRINTS_D6 = {};
 let SPRINTS_D1 = {};
 let SPRINTS_D553 = {};
 let SPRINTS_D7 = {};
@@ -1938,14 +2049,14 @@ function fecharPainel() {
 }
 
 function renderEditList() {
-  const temas = activeEpico === 'dvarpr7' ? TEMAS_BASE_D7 : activeEpico === 'dvarpr4' ? TEMAS_BASE_D4 : activeEpico === 'dvarpr111' ? TEMAS_BASE_D111 : activeEpico === 'dvarpr553' ? TEMAS_BASE_D553 : activeEpico === 'dvarpr1' ? TEMAS_BASE_D1 : TEMAS_BASE; // usa base para mostrar IDs/nomes originais
+  const temas = activeEpico === 'dvarpr7' ? TEMAS_BASE_D7 : activeEpico === 'dvarpr6' ? TEMAS_BASE_D6 : activeEpico === 'dvarpr4' ? TEMAS_BASE_D4 : activeEpico === 'dvarpr111' ? TEMAS_BASE_D111 : activeEpico === 'dvarpr553' ? TEMAS_BASE_D553 : activeEpico === 'dvarpr1' ? TEMAS_BASE_D1 : TEMAS_BASE; // usa base para mostrar IDs/nomes originais
   let html = '';
   temas.forEach(t => {
     html += `<div class="edit-group-header" data-tema="${t.id}">
       <span>${t.icone}</span> ${t.nome} <span style="color:#94a3b8;font-weight:400;">(${t.issues.length})</span>
     </div>`;
     t.issues.forEach(i => {
-      const curStatus = activeEpico === 'dvarpr7' ? getStatusD7(i.id, i.status) : activeEpico === 'dvarpr4' ? getStatusD4(i.id, i.status) : activeEpico === 'dvarpr111' ? getStatusD111(i.id, i.status) : activeEpico === 'dvarpr553' ? getStatusD553(i.id, i.status) : activeEpico === 'dvarpr1' ? getStatusD1(i.id, i.status) : getStatus(i.id, i.status);
+      const curStatus = activeEpico === 'dvarpr7' ? getStatusD7(i.id, i.status) : activeEpico === 'dvarpr6' ? getStatusD6(i.id, i.status) : activeEpico === 'dvarpr4' ? getStatusD4(i.id, i.status) : activeEpico === 'dvarpr111' ? getStatusD111(i.id, i.status) : activeEpico === 'dvarpr553' ? getStatusD553(i.id, i.status) : activeEpico === 'dvarpr1' ? getStatusD1(i.id, i.status) : getStatus(i.id, i.status);
       const opts = STATUS_OPTIONS.map(s =>
         `<option value="${s}" ${curStatus===s?'selected':''}>${s}</option>`
       ).join('');
@@ -1965,7 +2076,7 @@ function renderEditList() {
 
 function onStatusChange(sel, issueId) {
   const newStatus = sel.value;
-  if (activeEpico === 'dvarpr7') OVERRIDES_D7[issueId] = newStatus; else if (activeEpico === 'dvarpr4') OVERRIDES_D4[issueId] = newStatus; else if (activeEpico === 'dvarpr111') OVERRIDES_D111[issueId] = newStatus; else if (activeEpico === 'dvarpr553') OVERRIDES_D553[issueId] = newStatus; else if (activeEpico === 'dvarpr1') OVERRIDES_D1[issueId] = newStatus; else OVERRIDES[issueId] = newStatus;
+  if (activeEpico === 'dvarpr7') OVERRIDES_D7[issueId] = newStatus; else if (activeEpico === 'dvarpr6') OVERRIDES_D6[issueId] = newStatus; else if (activeEpico === 'dvarpr4') OVERRIDES_D4[issueId] = newStatus; else if (activeEpico === 'dvarpr111') OVERRIDES_D111[issueId] = newStatus; else if (activeEpico === 'dvarpr553') OVERRIDES_D553[issueId] = newStatus; else if (activeEpico === 'dvarpr1') OVERRIDES_D1[issueId] = newStatus; else OVERRIDES[issueId] = newStatus;
   // Atualiza cor do select imediatamente
   sel.className = 'status-select ' + statusClass(newStatus);
 }
@@ -1995,7 +2106,7 @@ function filtrarEditar() {
 
 function salvarAlteracoes() {
   fbShow('load', '💾 Salvando no Firebase...');
-  const ov = activeEpico === 'dvarpr7' ? OVERRIDES_D7 : activeEpico === 'dvarpr4' ? OVERRIDES_D4 : activeEpico === 'dvarpr111' ? OVERRIDES_D111 : activeEpico === 'dvarpr553' ? OVERRIDES_D553 : activeEpico === 'dvarpr1' ? OVERRIDES_D1 : OVERRIDES;
+  const ov = activeEpico === 'dvarpr7' ? OVERRIDES_D7 : activeEpico === 'dvarpr6' ? OVERRIDES_D6 : activeEpico === 'dvarpr4' ? OVERRIDES_D4 : activeEpico === 'dvarpr111' ? OVERRIDES_D111 : activeEpico === 'dvarpr553' ? OVERRIDES_D553 : activeEpico === 'dvarpr1' ? OVERRIDES_D1 : OVERRIDES;
   db.ref('status/' + activeEpico).set(ov)
     .then(() => {
       fecharPainel();
@@ -2039,6 +2150,12 @@ function switchTab(epico, btn) {
     document.getElementById('hdr-issues').textContent = '1 Issue';
     document.getElementById('hdr-temas').textContent = '1 Tema';
     renderTemasD4(); renderKpisD4(); applyFiltersD4();
+  } else if (epico === 'dvarpr6') {
+    document.querySelector('.header-left h1').textContent = '💰 DVARPR-6 — Forma de Pagamento';
+    document.querySelector('.header-left p').textContent = 'Visão Gerencial · Crediário: Configurar Formas de Pagamento com Limite de Crédito PDV Omni ↔ Protheus (SX5/24 + PSH)';
+    document.getElementById('hdr-issues').textContent = '3 Issues';
+    document.getElementById('hdr-temas').textContent = '1 Tema';
+    renderTemasD6(); renderKpisD6(); applyFiltersD6();
   } else if (epico === 'dvarpr7') {
     document.querySelector('.header-left h1').textContent = '💳 DVARPR-7 — Baixa de Títulos';
     document.querySelector('.header-left p').textContent = 'Visão Gerencial · Integração Financeira PDV Omni ↔ Protheus (SE1)';
@@ -2507,6 +2624,115 @@ function setFilterD4(f, btn) {
   applyFiltersD4();
 }
 
+// ══ D6: utilitários ══
+function getStatusD6(id, base) { return OVERRIDES_D6[id] !== undefined ? OVERRIDES_D6[id] : base; }
+function getTemasD6() {
+  return TEMAS_BASE_D6.map(t => ({ ...t, issues: t.issues.map(i => ({ ...i, status: getStatusD6(i.id, i.status) })) }));
+}
+
+// ══ D6: render temas ══
+let openCardsD6 = new Set(['config']);
+function renderTemasD6() {
+  const temas = getTemasD6();
+  document.getElementById('temas-grid-d6').innerHTML = temas.map(t => {
+    const prog = calcProgress(t.issues);
+    return `
+    <div class="tema-card" id="tema-d6-${t.id}">
+      <div class="tema-header" onclick="toggleTemaD6('${t.id}')">
+        <div class="tema-header-left">
+          <div class="tema-icon" style="background:${t.iconeBg}">${t.icone}</div>
+          <div><div class="tema-title">${t.nome}</div><div class="tema-subtitle">${t.fase}</div></div>
+        </div>
+        <div class="tema-header-right">
+          <div class="tema-count">${t.issues.length}</div>
+          <div class="tema-count-lbl">issues</div>
+          <div class="chevron">▼</div>
+        </div>
+      </div>
+      <div class="tema-body">
+        <div class="tema-meta">
+          <span class="dep-badge ${t.impClass}">🔒 ${t.impedimento}</span>
+          <span style="font-size:11px;color:#64748b;">${t.descricao}</span>
+        </div>
+        <div class="tema-progress">
+          <div class="tema-progress-label"><span>Progresso (esforço ponderado)</span><span class="tema-progress-pct">${prog.pct}%</span></div>
+          <div class="bar-track">${progressBarHtml(t.issues)}</div>
+        </div>
+        <div class="tema-issues">
+          ${t.issues.map(i => `<div class="issue-row">
+            <span class="issue-id">${idLink(i.id)}</span>
+            <span class="issue-name">${i.nome}</span>
+            <span class="badge ${statusClass(i.status)}">${statusLabel(i.status)}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  openCardsD6.forEach(id => { const el = document.getElementById('tema-d6-' + id); if (el) el.classList.add('open'); });
+}
+function toggleTemaD6(id) {
+  const el = document.getElementById('tema-d6-' + id);
+  el.classList.toggle('open');
+  if (el.classList.contains('open')) openCardsD6.add(id); else openCardsD6.delete(id);
+}
+
+// ══ D6: KPIs + completude ══
+function renderKpisD6() {
+  const temas = getTemasD6();
+  const all = temas.flatMap(t => t.issues);
+  const total = all.length;
+  const counts = {};
+  let ws = 0;
+  all.forEach(i => { counts[i.status] = (counts[i.status] || 0) + 1; ws += (STATUS_WEIGHT[i.status] || 0); });
+  const pct = total ? Math.round(ws / total) : 0;
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  set('kpi-d6-concluido', counts['Concluído'] || 0);
+  set('kpi-d6-cr',        counts['Code Review Concluído'] || 0);
+  set('kpi-d6-dev',       counts['Em Desenvolvimento'] || 0);
+  set('kpi-d6-comp',      counts['Comprometido'] || 0);
+  set('kpi-d6-emteste',   counts['Em Teste'] || 0);
+  set('kpi-d6-backlog',   counts['Backlog'] || 0);
+  set('pct-d6',           pct + '%');
+  if (activeEpico === 'dvarpr6') set('hdr-pct', pct + '% concluído');
+  const segs = [['Concluído','bar-concluido'],['Code Review Concluído','bar-codereview'],['Em Teste','bar-emteste'],['Em Desenvolvimento','bar-emdesenv'],['Comprometido','bar-comprometido'],['Backlog','bar-backlog']];
+  const bar = document.getElementById('bar-d6');
+  if (bar) bar.innerHTML = segs.map(([s, cls]) => {
+    const n = counts[s] || 0; if (!n) return '';
+    return `<div class="bar-seg ${cls}" style="width:${(n/total*100).toFixed(1)}%" title="${s}: ${n}"></div>`;
+  }).join('');
+}
+
+// ══ D6: tabela completa ══
+let currentFilterD6 = 'todos';
+function applyFiltersD6() {
+  const q = (document.getElementById('search-input-d6').value || '').toLowerCase();
+  const temas = getTemasD6();
+  const rows = temas.flatMap(t => t.issues.map(i => ({
+    id: i.id, nome: i.nome, tema: t.nome, temaId: t.id, status: i.status, impedimento: t.impedimento
+  })));
+  const filtered = rows.filter(r => {
+    const mf = currentFilterD6 === 'todos' || r.temaId === currentFilterD6;
+    const ms = !q || r.id.toLowerCase().includes(q) || r.nome.toLowerCase().includes(q);
+    return mf && ms;
+  });
+  document.getElementById('table-count-d6').textContent = filtered.length + ' issue' + (filtered.length > 1 ? 's' : '');
+  document.getElementById('tbody-d6').innerHTML = filtered.map(r => `
+    <tr>
+      <td><span style="font-family:monospace;font-size:11px;color:#475569;">${idLink(r.id)}</span></td>
+      <td><span class="entity-name">${r.nome}</span></td>
+      <td><span class="badge s-especial" style="font-size:10px;">${r.tema}</span></td>
+      <td><span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span></td>
+      <td>${SPRINTS_D6[r.id] ? `<span class="sprint-badge">${SPRINTS_D6[r.id]}</span>` : '<span style="color:#cbd5e1;font-size:11px;">—</span>'}</td>
+      <td style="font-size:11px;color:#64748b;">${r.impedimento}</td>
+    </tr>`).join('');
+}
+function setFilterD6(f, btn) {
+  currentFilterD6 = f;
+  document.querySelectorAll('#panel-dvarpr6 .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFiltersD6();
+}
+
 // ══ D111: utilitários ══
 function getStatusD111(id, base) { return OVERRIDES_D111[id] !== undefined ? OVERRIDES_D111[id] : base; }
 function getTemasD111() {
@@ -2678,6 +2904,16 @@ db.ref('status/dvarpr4').on('value', snapshot => {
 db.ref('sprints/dvarpr4').on('value', snapshot => {
   SPRINTS_D4 = snapshot.val() || {};
   if (activeEpico === 'dvarpr4') applyFiltersD4();
+}, err => {});
+
+db.ref('status/dvarpr6').on('value', snapshot => {
+  OVERRIDES_D6 = snapshot.val() || {};
+  if (activeEpico === 'dvarpr6') { renderTemasD6(); renderKpisD6(); applyFiltersD6(); }
+}, err => {});
+
+db.ref('sprints/dvarpr6').on('value', snapshot => {
+  SPRINTS_D6 = snapshot.val() || {};
+  if (activeEpico === 'dvarpr6') applyFiltersD6();
 }, err => {});
 
 db.ref('status/dvarpr111').on('value', snapshot => {
