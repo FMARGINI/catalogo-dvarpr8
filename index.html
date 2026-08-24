@@ -305,7 +305,12 @@ body {
 .filter-bar input { border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 10px; font-size: 12px; outline: none; width: 220px; color: #1e293b; }
 .filter-bar input:focus { border-color: #3b82f6; }
 .filter-btn { border: 1px solid #e2e8f0; background: white; border-radius: 6px; padding: 5px 12px; font-size: 11px; cursor: pointer; color: #475569; transition: all .15s; }
-.filter-btn:hover, .filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
+.filter-btn:hover, .status-filter-row { display:flex; flex-wrap:wrap; align-items:center; gap:5px; margin-top:7px; padding-top:7px; border-top:1px solid #e2e8f0; }
+.status-filter-label { font-size:10px; color:#94a3b8; font-weight:700; letter-spacing:.05em; text-transform:uppercase; margin-right:2px; }
+.status-filter-btn { padding:3px 11px; border-radius:999px; border:1px solid #e2e8f0; background:#f8fafc; font-size:11px; cursor:pointer; color:#475569; transition:.15s; }
+.status-filter-btn.active { background:#1B2A6B; color:#fff; border-color:#1B2A6B; }
+.status-filter-btn:hover:not(.active) { background:#e2e8f0; }
+.filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
 table { width: 100%; border-collapse: collapse; }
 thead th { background: #f8fafc; padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .5px; border-bottom: 2px solid #e2e8f0; white-space: nowrap; }
 tbody tr { border-bottom: 1px solid #f1f5f9; transition: background .1s; }
@@ -832,6 +837,17 @@ td { padding: 9px 14px; vertical-align: middle; }
     <button class="filter-btn" onclick="setFilter('Query',this)">Query</button>
     <button class="filter-btn" onclick="setFilter('Front-End',this)">Front-End IA</button>
     <button class="filter-btn" onclick="setFilter('ATUSX',this)">ATUSX</button>
+  <div class="status-filter-row">
+    <span class="status-filter-label">Status:</span>
+    <button class="status-filter-btn active" onclick="setStatusFilter('d8','todos',this)">Todos</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d8','Concluído',this)">Concluído</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d8','Code Review Concluído',this)">Code Review</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d8','Em Desenvolvimento',this)">Em Dev</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d8','Comprometido',this)">Comprometido</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d8','Em Teste',this)">Em Teste</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d8','Backlog',this)">Backlog</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d8','Cancelado',this)">Cancelado</button>
+  </div>
   </div>
   <table>
     <thead>
@@ -960,6 +976,17 @@ td { padding: 9px 14px; vertical-align: middle; }
     <button class="filter-btn" onclick="setFilterD1('modelagem',this)">Modelagem</button>
     <button class="filter-btn" onclick="setFilterD1('interface',this)">Interface e Agendas</button>
     <button class="filter-btn" onclick="setFilterD1('documentacao',this)">Documentação</button>
+  <div class="status-filter-row">
+    <span class="status-filter-label">Status:</span>
+    <button class="status-filter-btn active" onclick="setStatusFilter('d1','todos',this)">Todos</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d1','Concluído',this)">Concluído</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d1','Code Review Concluído',this)">Code Review</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d1','Em Desenvolvimento',this)">Em Dev</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d1','Comprometido',this)">Comprometido</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d1','Em Teste',this)">Em Teste</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d1','Backlog',this)">Backlog</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d1','Cancelado',this)">Cancelado</button>
+  </div>
   </div>
   <table>
     <thead><tr><th>ID</th><th>Nome</th><th>Tema</th><th>Status</th><th>Sprint</th><th>Impedimento</th></tr></thead>
@@ -1087,6 +1114,17 @@ td { padding: 9px 14px; vertical-align: middle; }
     <button class="filter-btn" onclick="setFilterD553('processamento',this)">Processamento</button>
     <button class="filter-btn" onclick="setFilterD553('documentacao',this)">Documentação</button>
     <button class="filter-btn" onclick="setFilterD553('relatorio',this)">Relatório</button>
+  <div class="status-filter-row">
+    <span class="status-filter-label">Status:</span>
+    <button class="status-filter-btn active" onclick="setStatusFilter('d553','todos',this)">Todos</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d553','Concluído',this)">Concluído</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d553','Code Review Concluído',this)">Code Review</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d553','Em Desenvolvimento',this)">Em Dev</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d553','Comprometido',this)">Comprometido</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d553','Em Teste',this)">Em Teste</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d553','Backlog',this)">Backlog</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d553','Cancelado',this)">Cancelado</button>
+  </div>
   </div>
   <table>
     <thead><tr><th>ID</th><th>Nome</th><th>Tema</th><th>Status</th><th>Sprint</th><th>Impedimento</th></tr></thead>
@@ -1181,6 +1219,17 @@ td { padding: 9px 14px; vertical-align: middle; }
     <button class="filter-btn active" onclick="setFilterD111('todos',this)">Todos</button>
     <button class="filter-btn" onclick="setFilterD111('matxfis',this)">Cálculo MATXFIS</button>
     <button class="filter-btn" onclick="setFilterD111('documentacao',this)">Documentação PSH</button>
+  <div class="status-filter-row">
+    <span class="status-filter-label">Status:</span>
+    <button class="status-filter-btn active" onclick="setStatusFilter('d111','todos',this)">Todos</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d111','Concluído',this)">Concluído</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d111','Code Review Concluído',this)">Code Review</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d111','Em Desenvolvimento',this)">Em Dev</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d111','Comprometido',this)">Comprometido</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d111','Em Teste',this)">Em Teste</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d111','Backlog',this)">Backlog</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d111','Cancelado',this)">Cancelado</button>
+  </div>
   </div>
   <table>
     <thead><tr><th>ID</th><th>Nome</th><th>Tema</th><th>Status</th><th>Sprint</th><th>Impedimento</th></tr></thead>
@@ -1276,6 +1325,17 @@ td { padding: 9px 14px; vertical-align: middle; }
     <button class="filter-btn" onclick="setFilterD7('spike',this)">Spike</button>
     <button class="filter-btn" onclick="setFilterD7('funcao',this)">Função PSH</button>
     <button class="filter-btn" onclick="setFilterD7('validacao',this)">Validação</button>
+  <div class="status-filter-row">
+    <span class="status-filter-label">Status:</span>
+    <button class="status-filter-btn active" onclick="setStatusFilter('d7','todos',this)">Todos</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d7','Concluído',this)">Concluído</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d7','Code Review Concluído',this)">Code Review</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d7','Em Desenvolvimento',this)">Em Dev</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d7','Comprometido',this)">Comprometido</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d7','Em Teste',this)">Em Teste</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d7','Backlog',this)">Backlog</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d7','Cancelado',this)">Cancelado</button>
+  </div>
   </div>
   <table>
     <thead><tr><th>ID</th><th>Nome</th><th>Tema</th><th>Status</th><th>Sprint</th><th>Impedimento</th></tr></thead>
@@ -1351,6 +1411,17 @@ td { padding: 9px 14px; vertical-align: middle; }
     <input type="text" id="search-input-d4" placeholder="🔍 Buscar por ID ou nome..." oninput="applyFiltersD4()">
     <button class="filter-btn active" onclick="setFilterD4('todos',this)">Todos</button>
     <button class="filter-btn" onclick="setFilterD4('campos',this)">Campos AI0</button>
+  <div class="status-filter-row">
+    <span class="status-filter-label">Status:</span>
+    <button class="status-filter-btn active" onclick="setStatusFilter('d4','todos',this)">Todos</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d4','Concluído',this)">Concluído</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d4','Code Review Concluído',this)">Code Review</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d4','Em Desenvolvimento',this)">Em Dev</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d4','Comprometido',this)">Comprometido</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d4','Em Teste',this)">Em Teste</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d4','Backlog',this)">Backlog</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d4','Cancelado',this)">Cancelado</button>
+  </div>
   </div>
   <table>
     <thead><tr><th>ID</th><th>Nome</th><th>Tema</th><th>Status</th><th>Sprint</th><th>Impedimento</th></tr></thead>
@@ -1469,6 +1540,17 @@ td { padding: 9px 14px; vertical-align: middle; }
     <button class="filter-btn active" onclick="setFilterD6('todos',this)">Todos</button>
     <button class="filter-btn" onclick="setFilterD6('config',this)">Configuração</button>
     <button class="filter-btn" onclick="setFilterD6('analise',this)">Análise de Crédito</button>
+  <div class="status-filter-row">
+    <span class="status-filter-label">Status:</span>
+    <button class="status-filter-btn active" onclick="setStatusFilter('d6','todos',this)">Todos</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d6','Concluído',this)">Concluído</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d6','Code Review Concluído',this)">Code Review</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d6','Em Desenvolvimento',this)">Em Dev</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d6','Comprometido',this)">Comprometido</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d6','Em Teste',this)">Em Teste</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d6','Backlog',this)">Backlog</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d6','Cancelado',this)">Cancelado</button>
+  </div>
   </div>
   <table>
     <thead><tr><th>ID</th><th>Nome</th><th>Tema</th><th>Status</th><th>Sprint</th><th>Impedimento</th></tr></thead>
@@ -1614,6 +1696,17 @@ td { padding: 9px 14px; vertical-align: middle; }
     <button class="filter-btn" onclick="setFilterD1211('integracao',this)">Integração</button>
     <button class="filter-btn" onclick="setFilterD1211('interface',this)">Interface</button>
     <button class="filter-btn" onclick="setFilterD1211('documentacao',this)">Documentação</button>
+  <div class="status-filter-row">
+    <span class="status-filter-label">Status:</span>
+    <button class="status-filter-btn active" onclick="setStatusFilter('d1211','todos',this)">Todos</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d1211','Concluído',this)">Concluído</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d1211','Code Review Concluído',this)">Code Review</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d1211','Em Desenvolvimento',this)">Em Dev</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d1211','Comprometido',this)">Comprometido</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d1211','Em Teste',this)">Em Teste</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d1211','Backlog',this)">Backlog</button>
+    <button class="status-filter-btn" onclick="setStatusFilter('d1211','Cancelado',this)">Cancelado</button>
+  </div>
   </div>
   <table>
     <thead><tr><th>ID</th><th>Nome</th><th>Tema</th><th>Status</th><th>Sprint</th><th>Impedimento</th></tr></thead>
@@ -2272,6 +2365,27 @@ function renderKpisECompletude() {
 }
 
 // ══ TABELA COMPLETA ══
+const statusFilters = {};
+function setStatusFilter(key, status, btn) {
+  if (!statusFilters[key]) statusFilters[key] = new Set();
+  const sf  = statusFilters[key];
+  const row = btn.closest('.status-filter-row');
+  const todosBtn = row.querySelector('.status-filter-btn');
+  if (status === 'todos') {
+    sf.clear();
+    row.querySelectorAll('.status-filter-btn').forEach(b => b.classList.remove('active'));
+    todosBtn.classList.add('active');
+  } else {
+    if (sf.has(status)) { sf.delete(status); btn.classList.remove('active'); }
+    else                 { sf.add(status);    btn.classList.add('active');    }
+    if (sf.size === 0) todosBtn.classList.add('active');
+    else               todosBtn.classList.remove('active');
+  }
+  const fn = {d8:'applyFilters',d1:'applyFiltersD1',d553:'applyFiltersD553',
+               d7:'applyFiltersD7',d4:'applyFiltersD4',d6:'applyFiltersD6',
+               d1211:'applyFiltersD1211',d111:'applyFiltersD111'};
+  window[fn[key]]();
+}
 let currentFilter = 'todos';
 function applyFilters() {
   const q = (document.getElementById('search-input').value||'').toLowerCase();
@@ -2285,7 +2399,9 @@ function applyFilters() {
       r.tema.toLowerCase().includes(currentFilter.toLowerCase()) ||
       r.temaId.toLowerCase().includes(currentFilter.toLowerCase());
     const ms = !q || r.id.toLowerCase().includes(q) || r.nome.toLowerCase().includes(q) || r.tema.toLowerCase().includes(q);
-    return mf && ms;
+    const _sfd8=statusFilters['d8']||new Set();
+    const ss=_sfd8.size===0||_sfd8.has(r.status);
+    return mf && ms && ss;
   });
   document.getElementById('table-count').textContent = filtered.length+' issues';
   document.getElementById('tbody').innerHTML = filtered.map(r => `
@@ -2576,7 +2692,9 @@ function applyFiltersD1() {
   const filtered = rows.filter(r => {
     const mf = currentFilterD1 === 'todos' || r.temaId === currentFilterD1;
     const ms = !q || r.id.toLowerCase().includes(q) || r.nome.toLowerCase().includes(q);
-    return mf && ms;
+    const _sfd1=statusFilters['d1']||new Set();
+    const ss=_sfd1.size===0||_sfd1.has(r.status);
+    return mf && ms && ss;
   });
   document.getElementById('table-count-d1').textContent = filtered.length + ' issues';
   document.getElementById('tbody-d1').innerHTML = filtered.map(r => `
@@ -2685,7 +2803,9 @@ function applyFiltersD553() {
   const filtered = rows.filter(r => {
     const mf = currentFilterD553 === 'todos' || r.temaId === currentFilterD553;
     const ms = !q || r.id.toLowerCase().includes(q) || r.nome.toLowerCase().includes(q);
-    return mf && ms;
+    const _sfd553=statusFilters['d553']||new Set();
+    const ss=_sfd553.size===0||_sfd553.has(r.status);
+    return mf && ms && ss;
   });
   document.getElementById('table-count-d553').textContent = filtered.length + ' issues';
   document.getElementById('tbody-d553').innerHTML = filtered.map(r => `
@@ -2794,7 +2914,9 @@ function applyFiltersD7() {
   const filtered = rows.filter(r => {
     const mf = currentFilterD7 === 'todos' || r.temaId === currentFilterD7;
     const ms = !q || r.id.toLowerCase().includes(q) || r.nome.toLowerCase().includes(q);
-    return mf && ms;
+    const _sfd7=statusFilters['d7']||new Set();
+    const ss=_sfd7.size===0||_sfd7.has(r.status);
+    return mf && ms && ss;
   });
   document.getElementById('table-count-d7').textContent = filtered.length + ' issues';
   document.getElementById('tbody-d7').innerHTML = filtered.map(r => `
@@ -2903,7 +3025,9 @@ function applyFiltersD4() {
   const filtered = rows.filter(r => {
     const mf = currentFilterD4 === 'todos' || r.temaId === currentFilterD4;
     const ms = !q || r.id.toLowerCase().includes(q) || r.nome.toLowerCase().includes(q);
-    return mf && ms;
+    const _sfd4=statusFilters['d4']||new Set();
+    const ss=_sfd4.size===0||_sfd4.has(r.status);
+    return mf && ms && ss;
   });
   document.getElementById('table-count-d4').textContent = filtered.length + ' issue' + (filtered.length > 1 ? 's' : '');
   document.getElementById('tbody-d4').innerHTML = filtered.map(r => `
@@ -3012,7 +3136,9 @@ function applyFiltersD6() {
   const filtered = rows.filter(r => {
     const mf = currentFilterD6 === 'todos' || r.temaId === currentFilterD6;
     const ms = !q || r.id.toLowerCase().includes(q) || r.nome.toLowerCase().includes(q);
-    return mf && ms;
+    const _sfd6=statusFilters['d6']||new Set();
+    const ss=_sfd6.size===0||_sfd6.has(r.status);
+    return mf && ms && ss;
   });
   document.getElementById('table-count-d6').textContent = filtered.length + ' issue' + (filtered.length > 1 ? 's' : '');
   document.getElementById('tbody-d6').innerHTML = filtered.map(r => `
@@ -3127,7 +3253,9 @@ function applyFiltersD1211() {
   const filtered = rows.filter(r => {
     const mf = currentFilterD1211 === 'todos' || r.temaId === currentFilterD1211;
     const ms = !q || r.id.toLowerCase().includes(q) || r.nome.toLowerCase().includes(q);
-    return mf && ms;
+    const _sfd1211=statusFilters['d1211']||new Set();
+    const ss=_sfd1211.size===0||_sfd1211.has(r.status);
+    return mf && ms && ss;
   });
   document.getElementById('table-count-d1211').textContent = filtered.length + ' issues';
   document.getElementById('tbody-d1211').innerHTML = filtered.map(r => `
@@ -3236,7 +3364,9 @@ function applyFiltersD111() {
   const filtered = rows.filter(r => {
     const mf = currentFilterD111 === 'todos' || r.temaId === currentFilterD111;
     const ms = !q || r.id.toLowerCase().includes(q) || r.nome.toLowerCase().includes(q);
-    return mf && ms;
+    const _sfd111=statusFilters['d111']||new Set();
+    const ss=_sfd111.size===0||_sfd111.has(r.status);
+    return mf && ms && ss;
   });
   document.getElementById('table-count-d111').textContent = filtered.length + ' issues';
   document.getElementById('tbody-d111').innerHTML = filtered.map(r => `
